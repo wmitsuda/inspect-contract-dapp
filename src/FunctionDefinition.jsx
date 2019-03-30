@@ -35,6 +35,7 @@ const FunctionDefinition = ({ f, index, contract }) => {
 
   return (
     <FunctionContainer>
+      <FunctionHeader index={index} f={f} />
       <Formik
         initialValues={initialValues}
         validateOnChange={false}
@@ -59,22 +60,24 @@ const FunctionContainer = styled.article`
   text-align: left;
 `;
 
+const FunctionHeader = React.memo(({ index, f }) => (
+  <header>
+    <h4>
+      Function #{index}: {f.name}({f.inputs.length > 0 && "..."})
+    </h4>
+  </header>
+));
+
 const FunctionForm = ({
   values,
   errors,
   touched,
   setFieldValue,
   isSubmitting,
-  index,
   f,
   returnValues
 }) => (
   <Form className="needs-validation" noValidate>
-    <header>
-      <h4>
-        Function #{index}: {f.name}({f.inputs.length > 0 && "..."})
-      </h4>
-    </header>
     <FunctionInputs
       inputs={f.inputs}
       disabled={isSubmitting}
