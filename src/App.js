@@ -188,7 +188,9 @@ const FunctionInput = ({
   touched
 }) => (
   <div className={`form-group ${errors && touched ? "text-danger" : null}`}>
-    <label htmlFor={input.name}>Input #{index}: </label>
+    <label htmlFor={input.name}>
+      Input #{index}: {input.name}
+    </label>
     <div className="input-group">
       <Field
         type="text"
