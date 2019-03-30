@@ -72,7 +72,7 @@ const FunctionForm = ({
   <Form className="needs-validation" noValidate>
     <header>
       <h4>
-        Function #{index}: {f.name}()
+        Function #{index}: {f.name}({f.inputs.length > 0 && "..."})
       </h4>
     </header>
     <FunctionInputs
