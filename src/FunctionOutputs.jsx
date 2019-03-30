@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 
 const FunctionOutputs = ({ processing, outputs, returnValues }) => {
   return outputs.map((output, key) => (
@@ -15,8 +15,11 @@ const FunctionOutputs = ({ processing, outputs, returnValues }) => {
 const FunctionOutput = ({ processing, index, output, returnValue }) => {
   const [formatValue, setFormatValue] = useState(true);
 
-  const isNumeric =
-    output.type.startsWith("int") || output.type.startsWith("uint");
+  const isNumeric = useMemo(
+    () => output.type.startsWith("int") || output.type.startsWith("uint"),
+    [output]
+  );
+  const isString = useMemo(() => output.type === "string", [output]);
 
   let value = "<undefined>";
   if (processing) {
@@ -27,6 +30,8 @@ const FunctionOutput = ({ processing, index, output, returnValue }) => {
       value = formatValue
         ? numericValue.toLocaleString()
         : numericValue.toString();
+    } else if (isString) {
+      value = `"${returnValue}"`;
     } else {
       value = returnValue || "<undefined>";
     }
