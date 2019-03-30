@@ -3,7 +3,10 @@ import "./App.css";
 import rawContract from "./StandardERC20Token.json";
 import styled from "styled-components";
 import Web3 from "web3";
-import { Formik, Form, Field } from "formik";
+import { Formik, Form } from "formik";
+import FunctionInputs from "./FunctionInputs";
+import FunctionOutputs from "./FunctionOutputs";
+import { Web3Context } from "./Web3Context";
 
 const abi = rawContract.abi;
 
@@ -13,7 +16,6 @@ const web3Options = {
   transactionConfirmationBlocks: 1
 };
 const web3 = new Web3(Web3.givenProvider, null, web3Options);
-const Web3Context = React.createContext();
 
 const ContractDefinition = ({ abi, address }) => {
   const [contract, setContract] = useState();
@@ -142,130 +144,6 @@ const FunctionForm = ({
     />
   </Form>
 );
-
-const FunctionInputs = ({
-  inputs,
-  disabled,
-  setFieldValue,
-  errors,
-  touched
-}) => {
-  const web3 = useContext(Web3Context);
-
-  const setMyAddress = fieldName => async () => {
-    const accounts = await web3.eth.getAccounts();
-    const defAccount = accounts[0];
-    setFieldValue(fieldName, defAccount);
-  };
-
-  return inputs.map((input, key) => (
-    <FunctionInput
-      key={key}
-      index={key}
-      input={input}
-      disabled={disabled}
-      setMyAddress={setMyAddress}
-      errors={errors[input.name]}
-      touched={touched[input.name]}
-    />
-  ));
-};
-
-const requireValidation = value => {
-  let errorMessage;
-  if (!value || value.trim() === "") {
-    errorMessage = "Value is required";
-  }
-  return errorMessage;
-};
-
-const FunctionInput = ({
-  index,
-  input,
-  disabled,
-  setMyAddress,
-  errors,
-  touched
-}) => (
-  <div className={`form-group ${errors && touched ? "text-danger" : null}`}>
-    <label htmlFor={input.name}>
-      Input #{index}: {input.name}
-    </label>
-    <div className="input-group">
-      <Field
-        type="text"
-        className={`form-control ${errors && touched ? "is-invalid" : null}`}
-        name={input.name}
-        placeholder={input.name}
-        disabled={disabled}
-        validate={requireValidation}
-      />
-      {input.type === "address" && (
-        <button
-          type="button"
-          className="input-group-prepend"
-          onClick={setMyAddress(input.name)}
-          disabled={disabled}
-        >
-          My address
-        </button>
-      )}
-      {errors && touched && <div className="invalid-feedback">{errors}</div>}
-    </div>
-    <small className="form-text text-muted">({input.type})</small>
-  </div>
-);
-
-const FunctionOutputs = ({ processing, outputs, returnValues }) => {
-  return outputs.map((output, key) => (
-    <FunctionOutput
-      key={key}
-      processing={processing}
-      index={key}
-      output={output}
-      returnValue={returnValues && returnValues[key]}
-    />
-  ));
-};
-
-const FunctionOutput = ({ processing, index, output, returnValue }) => {
-  const [formatValue, setFormatValue] = useState(true);
-
-  const isNumeric =
-    output.type.startsWith("int") || output.type.startsWith("uint");
-
-  let value = "<undefined>";
-  if (processing) {
-    value = "<processing...>";
-  } else if (returnValue) {
-    if (isNumeric) {
-      const numericValue = parseInt(returnValue);
-      value = formatValue
-        ? numericValue.toLocaleString()
-        : numericValue.toString();
-    } else {
-      value = returnValue || "<undefined>";
-    }
-  }
-
-  return (
-    <div>
-      Output #{index}: {output.name}
-      {value} ({output.type})
-      {returnValue && isNumeric && (
-        <span>
-          &nbsp;
-          <input
-            type="checkbox"
-            onChange={() => setFormatValue(!formatValue)}
-            checked={formatValue}
-          />
-          &nbsp;Format value
-        </span>
-      )}
-    </div>
-  );
-};
 
 const App = () => {
   return (
