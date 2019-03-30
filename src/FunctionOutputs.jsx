@@ -39,12 +39,14 @@ const FunctionOutput = ({ processing, index, output, returnValue }) => {
       {returnValue && isNumeric && (
         <span>
           &nbsp;
-          <input
-            type="checkbox"
-            onChange={() => setFormatValue(!formatValue)}
-            checked={formatValue}
-          />
-          &nbsp;Format value
+          <label>
+            <input
+              type="checkbox"
+              onChange={() => setFormatValue(!formatValue)}
+              checked={formatValue}
+            />
+            &nbsp;Format value
+          </label>
         </span>
       )}
     </div>
