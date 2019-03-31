@@ -35,18 +35,13 @@ const FunctionDefinition = ({ f, index, contract }) => {
 
   return (
     <FunctionContainer>
-      <FunctionHeader index={index} f={f} />
+      <FunctionHeader f={f} />
       <Formik
         initialValues={initialValues}
         validateOnChange={false}
         onSubmit={handleSubmit}
         render={props => (
-          <FunctionForm
-            index={index}
-            f={f}
-            returnValues={returnValues}
-            {...props}
-          />
+          <FunctionForm f={f} returnValues={returnValues} {...props} />
         )}
       />
     </FunctionContainer>
@@ -69,33 +64,17 @@ const FunctionHeader = React.memo(({ index, f }) => (
   </header>
 ));
 
-const FunctionForm = ({
-  values,
-  errors,
-  touched,
-  setFieldValue,
-  setFieldTouched,
-  isSubmitting,
-  f,
-  returnValues
-}) => (
+const FunctionForm = ({ f, returnValues, isSubmitting, ...rest }) => (
   <Form className="needs-validation" noValidate>
-    <FunctionInputs
-      inputs={f.inputs}
-      disabled={isSubmitting}
-      setFieldValue={setFieldValue}
-      setFieldTouched={setFieldTouched}
-      errors={errors}
-      touched={touched}
-    />
+    <FunctionInputs inputs={f.inputs} disabled={isSubmitting} {...rest} />
     {f.payable && "Payable: "}
     <button type="submit" disabled={isSubmitting}>
       {f.constant ? "Call" : "Send"}
     </button>
     <hr />
     <FunctionOutputs
-      processing={isSubmitting}
       outputs={f.outputs}
+      processing={isSubmitting}
       returnValues={returnValues}
     />
   </Form>
