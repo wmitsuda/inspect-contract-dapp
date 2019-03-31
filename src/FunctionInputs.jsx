@@ -36,7 +36,20 @@ const FunctionInputs = ({
   ));
 };
 
-const requireValidation = value => {
+const handleAddressValidation = (web3, value) => {
+  const defValidation = handleDefaultValidation(value);
+  if (defValidation) {
+    return defValidation;
+  }
+
+  let errorMessage;
+  if (!web3.utils.isAddress(value)) {
+    errorMessage = "Enter a valid ETH address";
+  }
+  return errorMessage;
+};
+
+const handleDefaultValidation = value => {
   let errorMessage;
   if (!value || value.trim() === "") {
     errorMessage = "Value is required";
@@ -73,6 +86,13 @@ const FunctionInput = ({
     setScanning(false);
   };
 
+  const handleValidation = value => {
+    if (input.type === "address") {
+      return handleAddressValidation(web3, value);
+    }
+    return handleDefaultValidation(value);
+  };
+
   return (
     <div className={`form-group ${errors && touched ? "text-danger" : null}`}>
       <label htmlFor={input.name}>
@@ -85,7 +105,7 @@ const FunctionInput = ({
           name={input.name}
           placeholder={input.name}
           disabled={disabled}
-          validate={requireValidation}
+          validate={handleValidation}
         />
         {input.type === "address" && (
           <>
