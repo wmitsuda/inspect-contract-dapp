@@ -74,6 +74,7 @@ const FunctionForm = ({
   errors,
   touched,
   setFieldValue,
+  setFieldTouched,
   isSubmitting,
   f,
   returnValues
@@ -83,6 +84,7 @@ const FunctionForm = ({
       inputs={f.inputs}
       disabled={isSubmitting}
       setFieldValue={setFieldValue}
+      setFieldTouched={setFieldTouched}
       errors={errors}
       touched={touched}
     />
