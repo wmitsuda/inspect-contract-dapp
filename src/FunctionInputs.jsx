@@ -36,6 +36,14 @@ const FunctionInputs = ({
   ));
 };
 
+const handleStringValidation = value => {
+  let errorMessage;
+  if (!value) {
+    errorMessage = "Value is required";
+  }
+  return errorMessage;
+};
+
 const handleAddressValidation = (web3, value) => {
   const defValidation = handleDefaultValidation(value);
   if (defValidation) {
@@ -45,6 +53,21 @@ const handleAddressValidation = (web3, value) => {
   let errorMessage;
   if (!web3.utils.isAddress(value)) {
     errorMessage = "Enter a valid ETH address";
+  }
+  return errorMessage;
+};
+
+const handleBytesValidation = (size, web3, value) => {
+  const defValidation = handleDefaultValidation(value);
+  if (defValidation) {
+    return defValidation;
+  }
+
+  let errorMessage;
+  if (!web3.utils.isHexStrict(value)) {
+    errorMessage = "Enter a valid hex string";
+  } else if (value.length !== size * 2 + 2) {
+    errorMessage = `Byte array must be of size ${size}`;
   }
   return errorMessage;
 };
@@ -87,8 +110,12 @@ const FunctionInput = ({
   };
 
   const handleValidation = value => {
-    if (input.type === "address") {
+    if (input.type === "string") {
+      return handleStringValidation(value);
+    } else if (input.type === "address") {
       return handleAddressValidation(web3, value);
+    } else if (input.type.startsWith("bytes")) {
+      return handleBytesValidation(parseInt(input.type.substr(5)), web3, value);
     }
     return handleDefaultValidation(value);
   };

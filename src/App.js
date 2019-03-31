@@ -1,6 +1,7 @@
 import React from "react";
 import "./App.css";
-import rawContract from "./StandardERC20Token.json";
+// import rawContract from "./StandardERC20Token.json";
+import rawContract from "./DemoContract.json";
 import Web3 from "web3";
 import { Web3Context } from "./Web3Context";
 import ContractDefinition from "./ContractDefinition";
