@@ -5,7 +5,23 @@ import App from "./App";
 import * as serviceWorker from "./serviceWorker";
 import "bootstrap/dist/css/bootstrap.min.css";
 
-ReactDOM.render(<App />, document.getElementById("root"));
+import rawErc20Contract from "./StandardERC20Token.json";
+import rawDemoContract from "./DemoContract.json";
+
+const erc20Contract = {
+  address: "0xD7758b318edd7aD12A2A0142C56c335be1607A79",
+  abi: rawErc20Contract.abi
+};
+
+const demoContract = {
+  address: "0xbae733b606788f169199D24c69bdC95a2dd9a500",
+  abi: rawDemoContract.abi
+};
+
+ReactDOM.render(
+  <App contractData={erc20Contract} />,
+  document.getElementById("root")
+);
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.

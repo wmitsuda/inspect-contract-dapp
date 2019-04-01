@@ -126,14 +126,35 @@ const FunctionInput = ({
         Input #{index}: {input.name}
       </label>
       <div className="input-group">
-        <Field
-          type="text"
-          className={`form-control ${errors && touched ? "is-invalid" : null}`}
-          name={input.name}
-          placeholder={input.name}
-          disabled={disabled}
-          validate={handleValidation}
-        />
+        {input.type === "bool" ? (
+          <>
+            <span>
+              <Field type="radio" name={input.name} id={`${input.name}_true`} />
+              <label htmlFor={`${input.name}_true`}>true</label>
+            </span>{" "}
+            <span>
+              <Field
+                type="radio"
+                name={input.name}
+                id={`${input.name}_false`}
+              />
+              <label htmlFor={`${input.name}_false`}>false</label>
+            </span>
+          </>
+        ) : (
+          <>
+            <Field
+              type="text"
+              className={`form-control ${
+                errors && touched ? "is-invalid" : null
+              }`}
+              name={input.name}
+              placeholder={input.name}
+              disabled={disabled}
+              validate={handleValidation}
+            />
+          </>
+        )}
         {input.type === "address" && (
           <>
             <button

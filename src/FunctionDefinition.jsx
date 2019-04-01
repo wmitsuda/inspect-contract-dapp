@@ -3,9 +3,11 @@ import styled from "styled-components";
 import { Formik, Form } from "formik";
 import FunctionInputs from "./FunctionInputs";
 import FunctionOutputs from "./FunctionOutputs";
+import FunctionEvents from "./FunctionEvents";
 
-const FunctionDefinition = ({ f, index, contract }) => {
+const FunctionDefinition = ({ f, index, contract, eventABI }) => {
   const [returnValues, setReturnValues] = useState();
+  const [returnedEvents, setReturnedEvents] = useState();
   const initialValues = useMemo(
     () =>
       f.inputs.reduce((o, input) => Object.assign(o, { [input.name]: "" }), {}),
@@ -28,6 +30,39 @@ const FunctionDefinition = ({ f, index, contract }) => {
       // Send
       const outputs = await method.send();
       setReturnValues([outputs.status]);
+
+      // Extract and parse received events
+      const processEvent = e => {
+        const { event: eventName, returnValues } = e;
+        const abi = eventABI.filter(e => e.name === eventName);
+        if (abi.length !== 1) {
+          console.log("Could not find event ABI");
+          return;
+        }
+
+        const event = abi[0];
+        const attrs = {};
+        for (const i of event.inputs) {
+          Object.assign(attrs, {
+            [i.name]: {
+              type: i.type,
+              value: returnValues[i.name]
+            }
+          });
+        }
+        return { event: e.event, logIndex: e.logIndex, attrs };
+      };
+
+      const { events } = outputs;
+      const evs = Object.keys(events).flatMap(k => {
+        const ev = events[k];
+        if (Array.isArray(ev)) {
+          return ev.map(e => processEvent(e));
+        }
+        return processEvent(ev);
+      });
+      evs.sort((a, b) => a.logIndex - b.logIndex);
+      setReturnedEvents(evs);
     }
 
     setSubmitting(false);
@@ -41,7 +76,12 @@ const FunctionDefinition = ({ f, index, contract }) => {
         validateOnChange={false}
         onSubmit={handleSubmit}
         render={props => (
-          <FunctionForm f={f} returnValues={returnValues} {...props} />
+          <FunctionForm
+            f={f}
+            returnValues={returnValues}
+            returnedEvents={returnedEvents}
+            {...props}
+          />
         )}
       />
     </FunctionContainer>
@@ -64,12 +104,18 @@ const FunctionHeader = React.memo(({ index, f }) => (
   </header>
 ));
 
-const FunctionForm = ({ f, returnValues, isSubmitting, ...rest }) => (
+const FunctionForm = ({
+  f,
+  returnValues,
+  returnedEvents,
+  isSubmitting,
+  ...rest
+}) => (
   <Form className="needs-validation" noValidate>
     <FunctionInputs inputs={f.inputs} disabled={isSubmitting} {...rest} />
     {f.payable && "Payable: "}
     <button type="submit" disabled={isSubmitting}>
-      {f.constant ? "Call" : "Send"}
+      {f.constant ? "Call" : "Send..."}
     </button>
     <hr />
     <FunctionOutputs
@@ -77,6 +123,7 @@ const FunctionForm = ({ f, returnValues, isSubmitting, ...rest }) => (
       processing={isSubmitting}
       returnValues={returnValues}
     />
+    {returnedEvents && <FunctionEvents events={returnedEvents} />}
   </Form>
 );
 

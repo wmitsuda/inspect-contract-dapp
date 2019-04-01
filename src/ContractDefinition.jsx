@@ -8,6 +8,7 @@ const ContractDefinition = ({ address, abi }) => {
   const abiFunctions = useMemo(() => abi.filter(f => f.type === "function"), [
     abi
   ]);
+  const abiEvents = useMemo(() => abi.filter(f => f.type === "event"), [abi]);
   const web3 = useContext(Web3Context);
 
   useEffect(() => {
@@ -28,7 +29,13 @@ const ContractDefinition = ({ address, abi }) => {
       </ClippedHeader>
       {contract &&
         abiFunctions.map((f, key) => (
-          <FunctionDefinition key={key} f={f} index={key} contract={contract} />
+          <FunctionDefinition
+            key={key}
+            f={f}
+            index={key}
+            contract={contract}
+            eventABI={abiEvents}
+          />
         ))}
     </section>
   );
