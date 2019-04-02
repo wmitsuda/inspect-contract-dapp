@@ -17,7 +17,10 @@ const FunctionOutput = ({ processing, index, output, returnValue }) => (
   <div>
     Output #{index}: {output.name}
     {processing ? (
-      <ReturnValue type="string" value="<processing...>" />
+      <>
+        {"<"}processing...{">"}
+        <ReturnValue type={output.type} />
+      </>
     ) : (
       <ReturnValue type={output.type} value={returnValue} />
     )}

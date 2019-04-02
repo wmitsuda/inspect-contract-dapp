@@ -1,4 +1,5 @@
 import React from "react";
+import ReturnValue from "./ReturnValue";
 
 const FunctionEvents = ({ events }) => (
   <section>
@@ -19,7 +20,7 @@ const FunctionEvent = ({ event, attrs }) => (
         {Object.keys(attrs).map(k => (
           <tr key={k}>
             <td>
-              {k}: {attrs[k].value} ({attrs[k].type})
+              {k}: <ReturnValue type={attrs[k].type} value={attrs[k].value} />
             </td>
           </tr>
         ))}
