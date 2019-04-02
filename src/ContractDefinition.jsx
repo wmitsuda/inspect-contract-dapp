@@ -1,6 +1,6 @@
-import React, { useState, useEffect, useContext, useMemo } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import styled from "styled-components";
-import { Web3Context } from "./Web3Context";
+import { useWeb3 } from "./Web3Context";
 import FunctionDefinition from "./FunctionDefinition";
 
 const ContractDefinition = ({ address, abi }) => {
@@ -9,7 +9,7 @@ const ContractDefinition = ({ address, abi }) => {
     abi
   ]);
   const abiEvents = useMemo(() => abi.filter(f => f.type === "event"), [abi]);
-  const web3 = useContext(Web3Context);
+  const web3 = useWeb3();
 
   useEffect(() => {
     const createContract = async () => {

@@ -10,6 +10,7 @@
     "ethers": "^4.0.27",
     "formik": "^1.5.1",
     "react": "^16.8.6",
+    "react-copy-to-clipboard": "^5.0.1",
     "react-dom": "^16.8.6",
     "react-qr-reader": "^2.2.1",
     "react-scripts": "2.1.8",

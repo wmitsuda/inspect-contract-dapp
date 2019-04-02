@@ -4,8 +4,7 @@ import { Web3Context } from "./Web3Context";
 import QrReader from "react-qr-reader";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faQrcode } from "@fortawesome/free-solid-svg-icons";
-import { faWindowClose } from "@fortawesome/free-solid-svg-icons";
+import { faQrcode, faWindowClose } from "@fortawesome/free-solid-svg-icons";
 
 library.add(faQrcode);
 library.add(faWindowClose);
