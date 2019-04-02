@@ -1,7 +1,6 @@
-import React, { useState, useContext } from "react";
+import React, { useContext } from "react";
 import { Field } from "formik";
-import { Web3Context } from "./Web3Context";
-import QrReader from "react-qr-reader";
+import { Web3Context, useQRReader } from "./Web3Context";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faQrcode, faWindowClose } from "@fortawesome/free-solid-svg-icons";
@@ -87,25 +86,13 @@ const FunctionInput = ({
   errors,
   touched
 }) => {
-  const [isScanning, setScanning] = useState(false);
   const web3 = useContext(Web3Context);
+  const [isScanning, toggleScanning, QRReader] = useQRReader(setValue);
 
   const setMyAddress = async () => {
     const accounts = await web3.eth.getAccounts();
     const defaultAccount = accounts[0];
     setValue(defaultAccount);
-  };
-
-  const onScan = result => {
-    if (web3.utils.isAddress(result)) {
-      setValue(result);
-      setScanning(false);
-    }
-  };
-
-  const onError = err => {
-    console.log("Error while scanning address: " + err);
-    setScanning(false);
   };
 
   const handleValidation = value => {
@@ -159,7 +146,7 @@ const FunctionInput = ({
             <button
               type="button"
               className="input-group-prepend"
-              onClick={() => setScanning(!isScanning)}
+              onClick={toggleScanning}
               title={
                 isScanning
                   ? "Click to close camera"
@@ -181,7 +168,7 @@ const FunctionInput = ({
         )}
         {errors && touched && <div className="invalid-feedback">{errors}</div>}
       </div>
-      {isScanning && <QrReader onScan={onScan} onError={onError} />}
+      <QRReader />
       <small className="form-text text-muted">({input.type})</small>
     </div>
   );

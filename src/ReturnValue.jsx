@@ -39,10 +39,11 @@ const ReturnValue = ({ type, value }) => {
     <>
       {value && displayValue} ({type})
       {value && isNumeric && (
-        <span>
+        <span className="form-check form-check-inline">
           &nbsp;
-          <label>
+          <label className="form-check-label">
             <input
+              className="form-check-input"
               type="checkbox"
               onChange={() => setFormatValue(!formatValue)}
               checked={formatValue}
