@@ -3,10 +3,11 @@ import ReactDOM from "react-dom";
 import "./index.css";
 import App from "./App";
 import * as serviceWorker from "./serviceWorker";
-import "bootstrap/dist/css/bootstrap.min.css";
 
 import rawErc20Contract from "./StandardERC20Token.json";
 import rawDemoContract from "./DemoContract.json";
+
+import "typeface-roboto";
 
 const erc20Contract = {
   address: "0xD7758b318edd7aD12A2A0142C56c335be1607A79",

@@ -1,18 +1,27 @@
 import React, { useContext } from "react";
+import CardContent from "@material-ui/core/CardContent";
+import CardActions from "@material-ui/core/CardActions";
+import TextField from "@material-ui/core/TextField";
+import InputAdornment from "@material-ui/core/InputAdornment";
+import Button from "@material-ui/core/Button";
+import Tooltip from "@material-ui/core/Tooltip";
+import IconButton from "@material-ui/core/IconButton";
+import QrcodeScan from "mdi-material-ui/QrcodeScan";
+import WindowClose from "mdi-material-ui/WindowClose";
+import CircularProgress from "@material-ui/core/CircularProgress";
+import styled from "styled-components";
 import { Field } from "formik";
 import { Web3Context, useQRReader } from "./Web3Context";
-import { library } from "@fortawesome/fontawesome-svg-core";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faQrcode, faWindowClose } from "@fortawesome/free-solid-svg-icons";
-
-library.add(faQrcode);
-library.add(faWindowClose);
 
 const FunctionInputs = ({
+  f,
   inputs,
+  handleChange,
+  handleBlur,
   disabled,
   setFieldValue,
   setFieldTouched,
+  values,
   errors,
   touched
 }) => {
@@ -21,17 +30,45 @@ const FunctionInputs = ({
     setFieldTouched(field);
   };
 
-  return inputs.map((input, key) => (
-    <FunctionInput
-      key={key}
-      index={key}
-      input={input}
-      disabled={disabled}
-      setValue={setValue(input.name)}
-      errors={errors[input.name]}
-      touched={touched[input.name]}
-    />
-  ));
+  return (
+    <>
+      {inputs.length > 0 && (
+        <CardContent>
+          {inputs.map((input, key) => (
+            <FunctionInput
+              key={key}
+              index={key}
+              input={input}
+              handleChange={handleChange}
+              handleBlur={handleBlur}
+              disabled={disabled}
+              setValue={setValue(input.name)}
+              value={values[input.name]}
+              errors={errors[input.name]}
+              touched={touched[input.name]}
+            />
+          ))}
+        </CardContent>
+      )}
+      <CardActions>
+        <SpinningButton
+          variant="contained"
+          color="primary"
+          type="submit"
+          disabled={disabled}
+          fullWidth
+        >
+          {disabled ? (
+            <CircularProgress size={24} />
+          ) : f.constant ? (
+            "Call"
+          ) : (
+            "Send..."
+          )}
+        </SpinningButton>
+      </CardActions>
+    </>
+  );
 };
 
 const handleStringValidation = value => {
@@ -108,9 +145,6 @@ const FunctionInput = ({
 
   return (
     <div className={`form-group ${errors && touched ? "text-danger" : null}`}>
-      <label htmlFor={input.name}>
-        Input #{index}: {input.name}
-      </label>
       <div className="input-group">
         {input.type === "bool" ? (
           <>
@@ -128,50 +162,63 @@ const FunctionInput = ({
             </span>
           </>
         ) : (
-          <>
-            <Field
-              type="text"
-              className={`form-control ${
-                errors && touched ? "is-invalid" : null
-              }`}
-              name={input.name}
-              placeholder={input.name}
-              disabled={disabled}
-              validate={handleValidation}
-            />
-          </>
+          <Field
+            name={input.name}
+            placeholder={input.name}
+            disabled={disabled}
+            validate={handleValidation}
+            render={({ field, form }) => (
+              <TextField
+                label={input.name}
+                helperText={errors && touched ? errors : `(${input.type})`}
+                error={errors && touched}
+                disabled={disabled}
+                margin="normal"
+                required
+                {...field}
+                InputProps={
+                  input.type !== "address"
+                    ? {}
+                    : {
+                        endAdornment: (
+                          <InputAdornment position="end">
+                            <Tooltip
+                              title={
+                                isScanning
+                                  ? "Close camera"
+                                  : "Open camera and scan a QR code"
+                              }
+                            >
+                              <IconButton
+                                onClick={toggleScanning}
+                                disabled={disabled}
+                              >
+                                {isScanning ? <WindowClose /> : <QrcodeScan />}
+                              </IconButton>
+                            </Tooltip>
+                            <Button
+                              variant="outlined"
+                              onClick={setMyAddress}
+                              disabled={disabled}
+                            >
+                              My&nbsp;address
+                            </Button>
+                          </InputAdornment>
+                        )
+                      }
+                }
+              />
+            )}
+          />
         )}
-        {input.type === "address" && (
-          <>
-            <button
-              type="button"
-              className="input-group-prepend"
-              onClick={toggleScanning}
-              title={
-                isScanning
-                  ? "Click to close camera"
-                  : "Click to open the camera and scan a QR code"
-              }
-              disabled={disabled}
-            >
-              <FontAwesomeIcon icon={isScanning ? "window-close" : "qrcode"} />
-            </button>
-            <button
-              type="button"
-              className="input-group-prepend"
-              onClick={setMyAddress}
-              disabled={disabled}
-            >
-              My address
-            </button>
-          </>
-        )}
-        {errors && touched && <div className="invalid-feedback">{errors}</div>}
       </div>
       <QRReader />
-      <small className="form-text text-muted">({input.type})</small>
     </div>
   );
 };
+
+const SpinningButton = styled(Button)`
+  max-width: 5rem;
+`;
 
 export default FunctionInputs;

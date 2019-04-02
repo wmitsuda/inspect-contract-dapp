@@ -23,7 +23,7 @@ const ContractDefinition = ({ address, abi }) => {
   }, [web3, abi, address]);
 
   return (
-    <section>
+    <ContractSection>
       <ClippedHeader>
         <h4>Address:&nbsp;{address}</h4>
       </ClippedHeader>
@@ -37,9 +37,14 @@ const ContractDefinition = ({ address, abi }) => {
             eventABI={abiEvents}
           />
         ))}
-    </section>
+    </ContractSection>
   );
 };
+
+const ContractSection = styled.section`
+  background-color: #eeeeee;
+  padding: 2rem;
+`;
 
 const ClippedHeader = styled.article`
   overflow: hidden;

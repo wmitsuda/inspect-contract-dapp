@@ -1,4 +1,7 @@
 import React, { useState, useMemo } from "react";
+import Card from "@material-ui/core/Card";
+import CardHeader from "@material-ui/core/CardHeader";
+import Divider from "@material-ui/core/Divider";
 import styled from "styled-components";
 import { Formik, Form } from "formik";
 import FunctionInputs from "./FunctionInputs";
@@ -69,8 +72,9 @@ const FunctionDefinition = ({ f, index, contract, eventABI }) => {
   };
 
   return (
-    <FunctionContainer>
-      <FunctionHeader f={f} />
+    <FunctionCard>
+      <FunctionHeader index={index} f={f} />
+      <Divider />
       <Formik
         initialValues={initialValues}
         validateOnChange={false}
@@ -84,24 +88,18 @@ const FunctionDefinition = ({ f, index, contract, eventABI }) => {
           />
         )}
       />
-    </FunctionContainer>
+    </FunctionCard>
   );
 };
 
-const FunctionContainer = styled.article`
-  border: 1px solid black;
-  margin: 5px 20px;
-  padding: 10px;
-  text-align: left;
+const FunctionCard = styled(Card)`
+  margin-bottom: 1rem;
 `;
 
 const FunctionHeader = React.memo(({ index, f }) => (
-  <header>
-    <h4>
-      Function #{index}: {f.name}({f.inputs.length > 0 && "..."})
-    </h4>
-    <hr />
-  </header>
+  <CardHeader
+    title={`Function #${index}: ${f.name}(${f.inputs.length > 0 ? "..." : ""})`}
+  />
 ));
 
 const FunctionForm = ({
@@ -111,20 +109,24 @@ const FunctionForm = ({
   isSubmitting,
   ...rest
 }) => (
-  <Form className="needs-validation" noValidate>
-    <FunctionInputs inputs={f.inputs} disabled={isSubmitting} {...rest} />
-    {f.payable && "Payable: "}
-    <button type="submit" disabled={isSubmitting}>
-      {f.constant ? "Call" : "Send..."}
-    </button>
-    <hr />
+  <>
+    <Form className="needs-validation" noValidate>
+      <FunctionInputs
+        f={f}
+        inputs={f.inputs}
+        disabled={isSubmitting}
+        {...rest}
+      />
+      {f.payable && "Payable: "}
+    </Form>
+    <Divider />
     <FunctionOutputs
       outputs={f.outputs}
       processing={isSubmitting}
       returnValues={returnValues}
     />
     {returnedEvents && <FunctionEvents events={returnedEvents} />}
-  </Form>
+  </>
 );
 
 export default FunctionDefinition;

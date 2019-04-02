@@ -1,17 +1,18 @@
 import React, { useState, useMemo } from "react";
-import { library } from "@fortawesome/fontawesome-svg-core";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCopy, faExternalLinkAlt } from "@fortawesome/free-solid-svg-icons";
+import TableRow from "@material-ui/core/TableRow";
+import TableCell from "@material-ui/core/TableCell";
+import Tooltip from "@material-ui/core/Tooltip";
+import IconButton from "@material-ui/core/IconButton";
+import OpenInNew from "mdi-material-ui/OpenInNew";
+import ContentCopy from "mdi-material-ui/ContentCopy";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import { useEtherscan } from "./Web3Context";
 import ExternalLink from "./ExternalLink";
 
-library.add(faCopy);
-library.add(faExternalLinkAlt);
-
-const ReturnValue = ({ type, value }) => {
+const ReturnValue = ({ attrName, attrs }) => {
   const [formatValue, setFormatValue] = useState(true);
   const etherscan = useEtherscan();
+  const { type, value } = attrs;
 
   const isNumeric = useMemo(
     () => type.startsWith("int") || type.startsWith("uint"),
@@ -36,35 +37,48 @@ const ReturnValue = ({ type, value }) => {
   }
 
   return (
-    <>
-      {value && displayValue} ({type})
-      {value && isNumeric && (
-        <span className="form-check form-check-inline">
-          &nbsp;
-          <label className="form-check-label">
-            <input
-              className="form-check-input"
-              type="checkbox"
-              onChange={() => setFormatValue(!formatValue)}
-              checked={formatValue}
-            />
-            &nbsp;Format value
-          </label>
-        </span>
-      )}
-      {value && isAddress && etherscan && (
-        <span>
-          &nbsp;
-          <CopyToClipboard text={value}>
-            <FontAwesomeIcon icon="copy" />
-          </CopyToClipboard>
-          &nbsp;
-          <ExternalLink href={etherscan.getAddressURL(value)}>
-            <FontAwesomeIcon icon="external-link-alt" />
-          </ExternalLink>
-        </span>
-      )}
-    </>
+    <TableRow>
+      <TableCell>
+        {attrName} ({type})
+      </TableCell>
+      <TableCell>{value && displayValue}</TableCell>
+      <TableCell>
+        {value && isNumeric && (
+          <span className="form-check form-check-inline">
+            &nbsp;
+            <label className="form-check-label">
+              <input
+                className="form-check-input"
+                type="checkbox"
+                onChange={() => setFormatValue(!formatValue)}
+                checked={formatValue}
+              />
+              &nbsp;Format number
+            </label>
+          </span>
+        )}
+        {value && isAddress && etherscan && (
+          <span>
+            &nbsp;
+            <Tooltip title="Copy to clipboard">
+              <CopyToClipboard text={value}>
+                <IconButton aria-label="Copy address">
+                  <ContentCopy />
+                </IconButton>
+              </CopyToClipboard>
+            </Tooltip>
+            &nbsp;
+            <ExternalLink href={etherscan.getAddressURL(value)}>
+              <Tooltip title="Open in etherscan.io">
+                <IconButton aria-label="Open in etherscan.io">
+                  <OpenInNew />
+                </IconButton>
+              </Tooltip>
+            </ExternalLink>
+          </span>
+        )}
+      </TableCell>
+    </TableRow>
   );
 };
 
