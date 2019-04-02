@@ -1,9 +1,9 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useMemo } from "react";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCopy, faExternalLinkAlt } from "@fortawesome/free-solid-svg-icons";
 import { CopyToClipboard } from "react-copy-to-clipboard";
-import { useWeb3, getEtherscanURL } from "./Web3Context";
+import { useEtherscan } from "./Web3Context";
 import ExternalLink from "./ExternalLink";
 
 library.add(faCopy);
@@ -11,16 +11,7 @@ library.add(faExternalLinkAlt);
 
 const ReturnValue = ({ type, value }) => {
   const [formatValue, setFormatValue] = useState(true);
-  const web3 = useWeb3();
-
-  const [networkId, setNetworkId] = useState();
-  useEffect(() => {
-    const getNetworkId = async () => {
-      setNetworkId(await web3.eth.net.getId());
-    };
-    getNetworkId();
-  }, [web3]);
-  const etherscan = getEtherscanURL(networkId);
+  const etherscan = useEtherscan();
 
   const isNumeric = useMemo(
     () => type.startsWith("int") || type.startsWith("uint"),

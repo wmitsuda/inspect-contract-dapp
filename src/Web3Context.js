@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useState, useEffect, useContext } from "react";
 
 const Web3Context = React.createContext();
 
@@ -27,4 +27,18 @@ const getEtherscanURL = networkId => {
   };
 };
 
-export { Web3Context, useWeb3, getEtherscanURL };
+const useEtherscan = () => {
+  const web3 = useWeb3();
+  const [networkId, setNetworkId] = useState();
+
+  useEffect(() => {
+    const getNetworkId = async () => {
+      setNetworkId(await web3.eth.net.getId());
+    };
+    getNetworkId();
+  }, [web3]);
+
+  return getEtherscanURL(networkId);
+};
+
+export { Web3Context, useWeb3, useEtherscan };
