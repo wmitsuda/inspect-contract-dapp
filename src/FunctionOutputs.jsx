@@ -14,7 +14,7 @@ const FunctionOutputs = ({ processing, outputs, returnValues }) => (
     <Table padding="dense">
       <TableHead>
         <TableRow>
-          <TableCell>Attribute</TableCell>
+          <TableCell>Return</TableCell>
           <TableCell>Value</TableCell>
           <TableCell>Actions</TableCell>
         </TableRow>
@@ -25,6 +25,7 @@ const FunctionOutputs = ({ processing, outputs, returnValues }) => (
             key={key}
             attrName={output.name}
             attrs={{
+              index: key,
               type: output.type,
               value: returnValues && returnValues[key]
             }}

@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from "react";
 import Card from "@material-ui/core/Card";
 import CardHeader from "@material-ui/core/CardHeader";
+import Typography from "@material-ui/core/Typography";
 import Divider from "@material-ui/core/Divider";
 import styled from "styled-components";
 import { Formik, Form } from "formik";
@@ -96,9 +97,34 @@ const FunctionCard = styled(Card)`
   margin-bottom: 1rem;
 `;
 
+const functionReturns = f => {
+  if (f.outputs.length === 0) {
+    return "";
+  }
+
+  return (
+    f.outputs.reduce(
+      (str, o, idx) =>
+        str + (idx === 0 ? "" : ", ") + o.type + (o.name ? " " + o.name : ""),
+      " returns ("
+    ) + ")"
+  );
+};
+
 const FunctionHeader = React.memo(({ index, f }) => (
   <CardHeader
-    title={`Function #${index}: ${f.name}(${f.inputs.length > 0 ? "..." : ""})`}
+    title={
+      <Typography variant="h6" color="textPrimary">
+        <small>function</small>
+        {` ${f.name}(${f.inputs.length > 0 ? "..." : ""})`}
+        <small>
+          {" "}
+          public {f.constant ? " view" : ""}
+          {f.payable ? " payable" : ""}
+          {functionReturns(f)}
+        </small>
+      </Typography>
+    }
   />
 ));
 
@@ -120,11 +146,13 @@ const FunctionForm = ({
       {f.payable && "Payable: "}
     </Form>
     <Divider />
-    <FunctionOutputs
-      outputs={f.outputs}
-      processing={isSubmitting}
-      returnValues={returnValues}
-    />
+    {returnValues && (
+      <FunctionOutputs
+        outputs={f.outputs}
+        processing={isSubmitting}
+        returnValues={returnValues}
+      />
+    )}
     {returnedEvents && <FunctionEvents events={returnedEvents} />}
   </>
 );

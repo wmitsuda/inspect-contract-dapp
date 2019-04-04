@@ -8,6 +8,7 @@ import Tooltip from "@material-ui/core/Tooltip";
 import IconButton from "@material-ui/core/IconButton";
 import QrcodeScan from "mdi-material-ui/QrcodeScan";
 import WindowClose from "mdi-material-ui/WindowClose";
+import AccountArrowLeftOutline from "mdi-material-ui/AccountArrowLeftOutline";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import styled from "styled-components";
 import { Field } from "formik";
@@ -175,6 +176,7 @@ const FunctionInput = ({
                 disabled={disabled}
                 margin="normal"
                 required
+                fullWidth
                 {...field}
                 InputProps={
                   input.type !== "address"
@@ -196,13 +198,14 @@ const FunctionInput = ({
                                 {isScanning ? <WindowClose /> : <QrcodeScan />}
                               </IconButton>
                             </Tooltip>
-                            <Button
-                              variant="outlined"
-                              onClick={setMyAddress}
-                              disabled={disabled}
-                            >
-                              My&nbsp;address
-                            </Button>
+                            <Tooltip title="Fill my address">
+                              <IconButton
+                                onClick={setMyAddress}
+                                disabled={disabled}
+                              >
+                                <AccountArrowLeftOutline />
+                              </IconButton>
+                            </Tooltip>
                           </InputAdornment>
                         )
                       }

@@ -9,10 +9,9 @@ import { CopyToClipboard } from "react-copy-to-clipboard";
 import { useEtherscan } from "./Web3Context";
 import ExternalLink from "./ExternalLink";
 
-const ReturnValue = ({ attrName, attrs }) => {
+const ReturnValue = ({ attrName, attrs: { index, type, value } }) => {
   const [formatValue, setFormatValue] = useState(true);
   const etherscan = useEtherscan();
-  const { type, value } = attrs;
 
   const isNumeric = useMemo(
     () => type.startsWith("int") || type.startsWith("uint"),
@@ -39,7 +38,7 @@ const ReturnValue = ({ attrName, attrs }) => {
   return (
     <TableRow>
       <TableCell>
-        {attrName} ({type})
+        {attrName ? attrName : `unnamed #${index}`} ({type})
       </TableCell>
       <TableCell>{value && displayValue}</TableCell>
       <TableCell>
