@@ -10,7 +10,7 @@ import Account from "mdi-material-ui/Account";
 import { useNetwork, useSelectedAccount } from "./Web3Context";
 import { useDrawer } from "./DrawerContext";
 
-const GlobalAppBar = ({ contractAddress }) => {
+const GlobalAppBar = () => {
   const { openDrawer } = useDrawer();
   const [, networkName] = useNetwork();
   const { selectedAccount } = useSelectedAccount();

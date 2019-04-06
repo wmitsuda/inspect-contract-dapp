@@ -12,7 +12,7 @@ const ContractPage = ({ match, abi }) => {
     <main>
       <CssBaseline />
       <DrawerContext.Provider value={{ isDrawerOpen, setDrawerOpen }}>
-        <GlobalAppBar contractAddress={contractAddress} />
+        <GlobalAppBar />
         <ContractDefinition address={contractAddress} abi={abi} />
       </DrawerContext.Provider>
     </main>
