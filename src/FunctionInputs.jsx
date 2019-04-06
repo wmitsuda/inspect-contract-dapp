@@ -73,26 +73,34 @@ const FunctionInputs = ({
           )}
         </CardContent>
       )}
-      <CardActions>
-        <SpinningButton
-          variant="contained"
-          color="primary"
-          type="submit"
-          disabled={disabled}
-          fullWidth
-        >
-          {disabled ? (
-            <CircularProgress size={24} />
-          ) : f.constant ? (
-            "Call"
-          ) : (
-            "Send..."
-          )}
-        </SpinningButton>
-      </CardActions>
+      <FunctionActions f={f} disabled={disabled} />
     </>
   );
 };
+
+const FunctionActions = React.memo(({ f: { constant }, disabled }) => (
+  <CardActions>
+    <SpinningButton
+      variant="contained"
+      color="primary"
+      type="submit"
+      disabled={disabled}
+      fullWidth
+    >
+      {disabled ? (
+        <CircularProgress size={24} />
+      ) : constant ? (
+        "Call"
+      ) : (
+        "Send..."
+      )}
+    </SpinningButton>
+  </CardActions>
+));
+
+const SpinningButton = styled(Button)`
+  max-width: 5rem;
+`;
 
 const handleStringValidation = value => {
   let errorMessage;
@@ -167,83 +175,77 @@ const FunctionInput = ({
   };
 
   return (
-    <div className={`form-group ${errors && touched ? "text-danger" : null}`}>
-      <div className="input-group">
-        {input.type === "bool" ? (
-          <>
-            <span>
-              <Field type="radio" name={input.name} id={`${input.name}_true`} />
-              <label htmlFor={`${input.name}_true`}>true</label>
-            </span>{" "}
-            <span>
-              <Field
-                type="radio"
-                name={input.name}
-                id={`${input.name}_false`}
-              />
-              <label htmlFor={`${input.name}_false`}>false</label>
-            </span>
-          </>
-        ) : (
-          <Field
-            name={input.name}
-            placeholder={input.name}
-            disabled={disabled}
-            validate={handleValidation}
-            render={({ field, form }) => (
-              <TextField
-                label={`${input.type} ${input.name}`}
-                helperText={errors && touched ? errors : `(${input.type})`}
-                error={errors && touched}
-                disabled={disabled}
-                margin="normal"
-                required
-                fullWidth
-                {...field}
-                InputProps={
-                  input.type !== "address"
-                    ? {}
-                    : {
-                        endAdornment: (
-                          <InputAdornment position="end">
-                            <Tooltip
-                              title={
-                                isScanning
-                                  ? "Close camera"
-                                  : "Open camera and scan a QR code"
-                              }
-                            >
-                              <IconButton
-                                onClick={toggleScanning}
-                                disabled={disabled}
-                              >
-                                {isScanning ? <WindowClose /> : <QrcodeScan />}
-                              </IconButton>
-                            </Tooltip>
-                            <Tooltip title="Fill my address">
-                              <IconButton
-                                onClick={setMyAddress}
-                                disabled={disabled}
-                              >
-                                <AccountArrowLeftOutline />
-                              </IconButton>
-                            </Tooltip>
-                          </InputAdornment>
-                        )
-                      }
-                }
-              />
-            )}
-          />
-        )}
-      </div>
+    <>
+      {input.type === "bool" ? (
+        <>
+          <span>
+            <Field type="radio" name={input.name} id={`${input.name}_true`} />
+            <label htmlFor={`${input.name}_true`}>true</label>
+          </span>{" "}
+          <span>
+            <Field type="radio" name={input.name} id={`${input.name}_false`} />
+            <label htmlFor={`${input.name}_false`}>false</label>
+          </span>
+        </>
+      ) : (
+        <Field
+          name={input.name}
+          placeholder={input.name}
+          disabled={disabled}
+          validate={handleValidation}
+          render={({ field, form }) => (
+            <TextField
+              label={`${input.type} ${input.name}`}
+              helperText={errors && touched ? errors : `(${input.type})`}
+              error={errors && touched}
+              disabled={disabled}
+              margin="normal"
+              required
+              fullWidth
+              {...field}
+              InputProps={
+                input.type !== "address"
+                  ? {}
+                  : {
+                      endAdornment: (
+                        <AddressInputAdornment
+                          isScanning={isScanning}
+                          toggleScanning={toggleScanning}
+                          disabled={disabled}
+                          setMyAddress={setMyAddress}
+                        />
+                      )
+                    }
+              }
+            />
+          )}
+        />
+      )}
       <QRReader />
-    </div>
+    </>
   );
 };
 
-const SpinningButton = styled(Button)`
-  max-width: 5rem;
-`;
+const AddressInputAdornment = ({
+  isScanning,
+  toggleScanning,
+  disabled,
+  setMyAddress
+}) => (
+  <InputAdornment position="end">
+    <Tooltip
+      title={isScanning ? "Close camera" : "Open camera and scan a QR code"}
+    >
+      <IconButton onClick={toggleScanning} disabled={disabled}>
+        {isScanning ? <WindowClose /> : <QrcodeScan />}
+      </IconButton>
+    </Tooltip>
+    <Tooltip title="Fill my address">
+      <IconButton onClick={setMyAddress} disabled={disabled}>
+        <AccountArrowLeftOutline />
+      </IconButton>
+    </Tooltip>
+  </InputAdornment>
+);
 
 export default FunctionInputs;
