@@ -1,7 +1,7 @@
 import styled from "styled-components";
 
 const AnchorLink = styled.div`
-  top: -96px;
+  top: -116px;
   position: relative;
   visibility: hidden;
 `;
