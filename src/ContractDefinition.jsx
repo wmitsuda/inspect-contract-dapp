@@ -67,9 +67,8 @@ const ContractDefinition = ({ address, abi }) => {
         </Grid>
         {contract &&
           abiFunctions.map((f, key) => (
-            <Grid item>
+            <Grid key={key} item>
               <FunctionDefinition
-                key={key}
                 f={f}
                 index={key}
                 contract={contract}
