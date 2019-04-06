@@ -37,8 +37,8 @@ const DrawerMenu = ({ action }) => (
 );
 
 const EthereumNetwork = ({ networkName }) => (
-  <Grid item noWrap>
-    <Grid alignItems="center" container>
+  <Grid item>
+    <Grid alignItems="center" wrap="nowrap" container>
       <Grid item>
         <Ethereum />
       </Grid>
@@ -53,7 +53,7 @@ const EthereumNetwork = ({ networkName }) => (
 
 const SelectedAccount = ({ address }) => (
   <Grid item>
-    <Grid alignItems="center" container>
+    <Grid alignItems="center" wrap="nowrap" container>
       <Grid item>
         <Account />
       </Grid>
