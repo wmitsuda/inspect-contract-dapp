@@ -8,17 +8,19 @@ import Typography from "@material-ui/core/Typography";
 import Ethereum from "mdi-material-ui/Ethereum";
 import Account from "mdi-material-ui/Account";
 import { useNetwork, useSelectedAccount } from "./Web3Context";
+import { useDrawer } from "./DrawerContext";
 
-const GlobalAppBar = ({ setDrawerOpen, contractAddress }) => {
+const GlobalAppBar = ({ contractAddress }) => {
   const [, networkName] = useNetwork();
   const { selectedAccount } = useSelectedAccount();
+  const { openDrawer } = useDrawer();
 
   return (
     <AppBar position="sticky">
       <Toolbar>
         <Grid spacing={16} alignItems="center" container>
           <Grid item>
-            <IconButton color="inherit" onClick={() => setDrawerOpen(true)}>
+            <IconButton color="inherit" onClick={openDrawer}>
               <MenuIcon />
             </IconButton>
           </Grid>

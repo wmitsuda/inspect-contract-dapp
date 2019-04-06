@@ -16,16 +16,18 @@ import AlphaScircleOutline from "mdi-material-ui/AlphaScircleOutline";
 import { Identicon } from "ethereum-react-components";
 import styled from "styled-components";
 import { useWeb3 } from "./Web3Context";
+import { useDrawer } from "./DrawerContext";
 import AnchorLink from "./AnchorLink";
 import FunctionDefinition from "./FunctionDefinition";
 
-const ContractDefinition = ({ address, abi, isDrawerOpen, setDrawerOpen }) => {
+const ContractDefinition = ({ address, abi }) => {
   const [contract, setContract] = useState();
   const abiFunctions = useMemo(() => abi.filter(f => f.type === "function"), [
     abi
   ]);
   const abiEvents = useMemo(() => abi.filter(f => f.type === "event"), [abi]);
   const web3 = useWeb3();
+  const { isDrawerOpen, closeDrawer } = useDrawer();
 
   useEffect(() => {
     const createContract = async () => {
@@ -37,8 +39,6 @@ const ContractDefinition = ({ address, abi, isDrawerOpen, setDrawerOpen }) => {
     };
     createContract();
   }, [web3, abi, address]);
-
-  const closeDrawer = () => setDrawerOpen(false);
 
   return (
     <ContractSection>
