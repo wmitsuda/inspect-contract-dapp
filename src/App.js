@@ -5,11 +5,9 @@ import {
   Route,
   Redirect
 } from "react-router-dom";
-import CssBaseline from "@material-ui/core/CssBaseline";
 import Web3 from "web3";
 import { Web3Context, AccountContext } from "./Web3Context";
-import GlobalAppBar from "./GlobalAppBar";
-import ContractDefinition from "./ContractDefinition";
+import ContractPage from "./ContractPage";
 
 // Initialize web3
 const web3Options = {
@@ -44,28 +42,6 @@ const App = ({ contractData }) => {
         </AccountContext.Provider>
       </Web3Context.Provider>
     </Router>
-  );
-};
-
-const ContractPage = ({ match, abi }) => {
-  const { contractAddress } = match.params;
-  const [isDrawerOpen, setDrawerOpen] = useState(false);
-
-  return (
-    <main>
-      <CssBaseline />
-      <GlobalAppBar
-        setDrawerOpen={setDrawerOpen}
-        contractAddress={contractAddress}
-      />
-      <header />
-      <ContractDefinition
-        address={contractAddress}
-        abi={abi}
-        isDrawerOpen={isDrawerOpen}
-        setDrawerOpen={setDrawerOpen}
-      />
-    </main>
   );
 };
 
