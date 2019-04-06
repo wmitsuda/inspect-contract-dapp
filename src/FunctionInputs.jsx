@@ -49,6 +49,28 @@ const FunctionInputs = ({
               touched={touched[input.name]}
             />
           ))}
+          {f.payable && (
+            <Field
+              name="payableValue"
+              disabled={disabled}
+              render={({ field, form }) => (
+                <TextField
+                  label="Pay ETH"
+                  helperText={
+                    errors["payableValue"] && touched["payableValue"]
+                      ? errors
+                      : "Enter a value in ETH to be paid to the function call"
+                  }
+                  error={errors["payableValue"] && touched["payableValue"]}
+                  disabled={disabled}
+                  margin="normal"
+                  required
+                  fullWidth
+                  {...field}
+                />
+              )}
+            />
+          )}
         </CardContent>
       )}
       <CardActions>
@@ -170,7 +192,7 @@ const FunctionInput = ({
             validate={handleValidation}
             render={({ field, form }) => (
               <TextField
-                label={input.name}
+                label={`${input.type} ${input.name}`}
                 helperText={errors && touched ? errors : `(${input.type})`}
                 error={errors && touched}
                 disabled={disabled}

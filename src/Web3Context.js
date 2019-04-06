@@ -5,6 +5,60 @@ const Web3Context = React.createContext();
 
 const useWeb3 = () => useContext(Web3Context);
 
+const useNetwork = () => {
+  const web3 = useWeb3();
+  const [networkId, setNetworkId] = useState();
+  const [networkName, setNetworkName] = useState();
+
+  useEffect(() => {
+    const getNetworkId = async () => {
+      const id = await web3.eth.net.getId();
+      setNetworkId(id);
+
+      let name;
+      switch (id) {
+        case 1:
+          name = "Main";
+          break;
+        case 3:
+          name = "Ropsten";
+          break;
+        case 4:
+          name = "Rinkeby";
+          break;
+        case 42:
+          name = "Kovan";
+          break;
+        default:
+          name = `Unknown network (${id})`;
+      }
+      setNetworkName(name);
+    };
+    getNetworkId();
+  }, [web3]);
+
+  return [networkId, networkName];
+};
+
+const useAccounts = () => {
+  const web3 = useWeb3();
+  const [accounts, setAccounts] = useState();
+
+  useEffect(() => {
+    const getAccounts = async () => {
+      const accs = await web3.eth.getAccounts();
+      setAccounts(accs);
+    };
+    getAccounts();
+  }, [web3]);
+
+  return accounts;
+};
+
+const AccountContext = React.createContext();
+
+const useSelectedAccount = () => useContext(AccountContext);
+
 const networkPrefixes = {
   1: "",
   3: "ropsten.",
@@ -12,7 +66,9 @@ const networkPrefixes = {
   42: "kovan."
 };
 
-const getEtherscanURL = networkId => {
+const useEtherscan = () => {
+  const [networkId] = useNetwork();
+
   let networkPrefix = networkPrefixes[networkId];
   if (!networkPrefix) {
     return undefined;
@@ -26,20 +82,6 @@ const getEtherscanURL = networkId => {
     getTokenURL: address =>
       `https://${networkPrefix}etherscan.io/token/${address}`
   };
-};
-
-const useEtherscan = () => {
-  const web3 = useWeb3();
-  const [networkId, setNetworkId] = useState();
-
-  useEffect(() => {
-    const getNetworkId = async () => {
-      setNetworkId(await web3.eth.net.getId());
-    };
-    getNetworkId();
-  }, [web3]);
-
-  return getEtherscanURL(networkId);
 };
 
 const useQRReader = setValue => {
@@ -67,4 +109,13 @@ const useQRReader = setValue => {
   return [isScanning, toggleScanning, QRReader];
 };
 
-export { Web3Context, useWeb3, useEtherscan, useQRReader };
+export {
+  Web3Context,
+  useWeb3,
+  useNetwork,
+  useAccounts,
+  AccountContext,
+  useSelectedAccount,
+  useEtherscan,
+  useQRReader
+};

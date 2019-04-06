@@ -5,6 +5,7 @@
   "dependencies": {
     "@material-ui/core": "^3.9.3",
     "@material-ui/icons": "^3.0.2",
+    "ethereum-react-components": "^1.14.0",
     "ethers": "^4.0.27",
     "formik": "^1.5.1",
     "mdi-material-ui": "^5.10.0",
@@ -12,6 +13,8 @@
     "react-copy-to-clipboard": "^5.0.1",
     "react-dom": "^16.8.6",
     "react-qr-reader": "^2.2.1",
+    "react-router-dom": "^5.0.0",
+    "react-router-hash-link": "^1.2.1",
     "react-scripts": "2.1.8",
     "styled-components": "^4.2.0",
     "typeface-roboto": "0.0.54",
