@@ -11,47 +11,59 @@ import { useNetwork, useSelectedAccount } from "./Web3Context";
 import { useDrawer } from "./DrawerContext";
 
 const GlobalAppBar = ({ contractAddress }) => {
+  const { openDrawer } = useDrawer();
   const [, networkName] = useNetwork();
   const { selectedAccount } = useSelectedAccount();
-  const { openDrawer } = useDrawer();
 
   return (
     <AppBar position="sticky">
       <Toolbar>
         <Grid spacing={16} alignItems="center" container>
-          <Grid item>
-            <IconButton color="inherit" onClick={openDrawer}>
-              <MenuIcon />
-            </IconButton>
-          </Grid>
-          <Grid item noWrap>
-            <Grid alignItems="center" container>
-              <Grid item>
-                <Ethereum />
-              </Grid>
-              <Grid item>
-                <Typography variant="h6" color="inherit" noWrap>
-                  {networkName}
-                </Typography>
-              </Grid>
-            </Grid>
-          </Grid>
-          <Grid item>
-            <Grid alignItems="center" container>
-              <Grid item>
-                <Account />
-              </Grid>
-              <Grid item>
-                <Typography variant="h6" color="inherit" noWrap>
-                  {selectedAccount}
-                </Typography>
-              </Grid>
-            </Grid>
-          </Grid>
+          <DrawerMenu action={openDrawer} />
+          <EthereumNetwork networkName={networkName} />
+          <SelectedAccount address={selectedAccount} />
         </Grid>
       </Toolbar>
     </AppBar>
   );
 };
+
+const DrawerMenu = ({ action }) => (
+  <Grid item>
+    <IconButton color="inherit" onClick={action}>
+      <MenuIcon />
+    </IconButton>
+  </Grid>
+);
+
+const EthereumNetwork = ({ networkName }) => (
+  <Grid item noWrap>
+    <Grid alignItems="center" container>
+      <Grid item>
+        <Ethereum />
+      </Grid>
+      <Grid item>
+        <Typography variant="h6" color="inherit" noWrap>
+          {networkName}
+        </Typography>
+      </Grid>
+    </Grid>
+  </Grid>
+);
+
+const SelectedAccount = ({ address }) => (
+  <Grid item>
+    <Grid alignItems="center" container>
+      <Grid item>
+        <Account />
+      </Grid>
+      <Grid item>
+        <Typography variant="h6" color="inherit" noWrap>
+          {address}
+        </Typography>
+      </Grid>
+    </Grid>
+  </Grid>
+);
 
 export default GlobalAppBar;
