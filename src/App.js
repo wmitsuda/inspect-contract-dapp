@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   BrowserRouter as Router,
   Switch,
@@ -6,7 +6,7 @@ import {
   Redirect
 } from "react-router-dom";
 import Web3 from "web3";
-import { Web3Context, AccountContext } from "./Web3Context";
+import { Web3Context, AccountContext, useDefaultAccount } from "./Web3Context";
 import ContractPage from "./ContractPage";
 
 // Initialize web3
@@ -18,7 +18,10 @@ const web3 = new Web3(Web3.givenProvider, null, web3Options);
 
 const App = ({ contractData }) => {
   const { abi } = contractData;
-  const [selectedAccount, setSelectedAccount] = useState("babababa");
+  const defaultAccount = useDefaultAccount();
+
+  const [selectedAccount, setSelectedAccount] = useState(defaultAccount);
+  useEffect(() => setSelectedAccount(defaultAccount), [defaultAccount]);
 
   return (
     <Router>

@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
+import Web3 from "web3";
 import QrReader from "react-qr-reader";
 
 const Web3Context = React.createContext();
@@ -59,6 +60,20 @@ const AccountContext = React.createContext();
 
 const useSelectedAccount = () => useContext(AccountContext);
 
+const useDefaultAccount = () => {
+  const [defaultAccount, setDefaultAccount] = useState();
+
+  useEffect(() => {
+    const enableWeb3 = async () => {
+      const accounts = await Web3.givenProvider.enable();
+      setDefaultAccount(accounts[0]);
+    };
+    enableWeb3();
+  }, []);
+
+  return defaultAccount;
+};
+
 const networkPrefixes = {
   1: "",
   3: "ropsten.",
@@ -116,6 +131,7 @@ export {
   useAccounts,
   AccountContext,
   useSelectedAccount,
+  useDefaultAccount,
   useEtherscan,
   useQRReader
 };
