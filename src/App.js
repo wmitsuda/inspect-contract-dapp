@@ -16,8 +16,8 @@ const web3Options = {
 Web3.givenProvider.enable();
 const web3 = new Web3(Web3.givenProvider, null, web3Options);
 
-const App = ({ contractData }) => {
-  const { abi } = contractData;
+const App = () => {
+  const [abi, setAbi] = useState([]);
   const defaultAccount = useDefaultAccount();
 
   const [selectedAccount, setSelectedAccount] = useState(defaultAccount);
@@ -32,7 +32,9 @@ const App = ({ contractData }) => {
           <Switch>
             <Route
               path="/:contractAddress"
-              render={props => <ContractPage abi={abi} {...props} />}
+              render={props => (
+                <ContractPage abi={abi} abiSetter={setAbi} {...props} />
+              )}
             />
             <Route
               path="/"

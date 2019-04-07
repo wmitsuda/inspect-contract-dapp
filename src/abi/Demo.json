@@ -1,0 +1,119 @@
+[
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "name": "a",
+        "type": "int256"
+      },
+      {
+        "indexed": false,
+        "name": "b",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "name": "c",
+        "type": "bool"
+      },
+      {
+        "indexed": false,
+        "name": "d",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "name": "e",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "name": "f",
+        "type": "bytes8"
+      }
+    ],
+    "name": "DemoEvent",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "name": "a",
+        "type": "int256"
+      },
+      {
+        "indexed": false,
+        "name": "b",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "name": "c",
+        "type": "bool"
+      },
+      {
+        "indexed": false,
+        "name": "d",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "name": "e",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "name": "f",
+        "type": "bytes8"
+      }
+    ],
+    "name": "DemoEvent22",
+    "type": "event"
+  },
+  {
+    "constant": false,
+    "inputs": [],
+    "name": "init",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "a",
+        "type": "int256"
+      },
+      {
+        "name": "b",
+        "type": "uint256"
+      },
+      {
+        "name": "c",
+        "type": "bool"
+      },
+      {
+        "name": "d",
+        "type": "address"
+      },
+      {
+        "name": "e",
+        "type": "string"
+      },
+      {
+        "name": "f",
+        "type": "bytes8"
+      }
+    ],
+    "name": "demoFunction",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  }
+]

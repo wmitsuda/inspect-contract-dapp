@@ -195,6 +195,7 @@ const FunctionInput = ({
           validate={handleValidation}
           render={({ field, form }) => (
             <TextField
+              {...field}
               label={`${input.type} ${input.name}`}
               helperText={errors && touched ? errors : `(${input.type})`}
               error={errors && touched}
@@ -202,7 +203,6 @@ const FunctionInput = ({
               margin="normal"
               required
               fullWidth
-              {...field}
               InputProps={
                 input.type !== "address"
                   ? {}
