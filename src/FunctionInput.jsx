@@ -53,22 +53,8 @@ const handleDefaultValidation = value => {
   return errorMessage;
 };
 
-const FunctionInput = ({
-  index,
-  input,
-  disabled,
-  setValue,
-  errors,
-  touched
-}) => {
+const FunctionInput = ({ input, hideType }) => {
   const web3 = useContext(Web3Context);
-  const [isScanning, toggleScanning, QRReader] = useQRReader(setValue);
-
-  const setMyAddress = async () => {
-    const accounts = await web3.eth.getAccounts();
-    const defaultAccount = accounts[0];
-    setValue(defaultAccount);
-  };
 
   const handleValidation = value => {
     if (input.type === "string") {
@@ -97,37 +83,64 @@ const FunctionInput = ({
       ) : (
         <Field
           name={input.name}
-          placeholder={input.name}
-          disabled={disabled}
           validate={handleValidation}
-          render={({ field, form }) => (
-            <TextField
-              {...field}
-              label={`${input.type} ${input.name}`}
-              helperText={errors && touched ? errors : `(${input.type})`}
-              error={errors && touched}
-              disabled={disabled}
-              margin="normal"
-              required
-              fullWidth
-              InputProps={
-                input.type !== "address"
-                  ? {}
-                  : {
-                      endAdornment: (
-                        <AddressInputAdornment
-                          isScanning={isScanning}
-                          toggleScanning={toggleScanning}
-                          disabled={disabled}
-                          setMyAddress={setMyAddress}
-                        />
-                      )
-                    }
-              }
-            />
+          render={props => (
+            <RegularTextField input={input} hideType={hideType} {...props} />
           )}
         />
       )}
+    </>
+  );
+};
+
+const RegularTextField = ({
+  input,
+  hideType,
+  field,
+  form: { isSubmitting, errors, touched, setFieldValue, setFieldTouched }
+}) => {
+  const setValue = value => {
+    setFieldValue(input.name, value, false);
+    setFieldTouched(input.name);
+  };
+  const [isScanning, toggleScanning, QRReader] = useQRReader(setValue);
+
+  const web3 = useContext(Web3Context);
+  const setMyAddress = async () => {
+    const accounts = await web3.eth.getAccounts();
+    const defaultAccount = accounts[0];
+    setValue(defaultAccount);
+  };
+
+  const myErrors = errors[input.name];
+  const myTouched = touched[input.name];
+
+  return (
+    <>
+      <TextField
+        {...field}
+        label={`${hideType ? "" : input.type} ${input.name}`}
+        helperText={myErrors && myTouched ? myErrors : `(${input.type})`}
+        error={myErrors && myTouched}
+        disabled={isSubmitting}
+        margin="normal"
+        required
+        fullWidth
+        InputProps={
+          input.type !== "address"
+            ? {}
+            : {
+                endAdornment: (
+                  <AddressInputAdornment
+                    isScanning={isScanning}
+                    toggleScanning={toggleScanning}
+                    onSetMyAddress={setMyAddress}
+                    disabled={isSubmitting}
+                  />
+                )
+              }
+        }
+      />
       <QRReader />
     </>
   );
@@ -136,8 +149,8 @@ const FunctionInput = ({
 const AddressInputAdornment = ({
   isScanning,
   toggleScanning,
-  disabled,
-  setMyAddress
+  onSetMyAddress,
+  disabled
 }) => (
   <InputAdornment position="end">
     <Tooltip
@@ -148,7 +161,7 @@ const AddressInputAdornment = ({
       </IconButton>
     </Tooltip>
     <Tooltip title="Fill my address">
-      <IconButton onClick={setMyAddress} disabled={disabled}>
+      <IconButton onClick={onSetMyAddress} disabled={disabled}>
         <AccountArrowLeftOutline />
       </IconButton>
     </Tooltip>

@@ -17,12 +17,14 @@ const ContractDrawer = ({ address, abiFunctions }) => {
   return (
     <Drawer anchor="left" open={isDrawerOpen} onClose={closeDrawer}>
       <OverviewSection address={address} closeDrawer={closeDrawer} />
-      {abiFunctions.length > 0 && (
+      {abiFunctions.length > 0 ? (
         <List subheader={<ListSubheader>Functions</ListSubheader>}>
           {abiFunctions.map((f, key) => (
             <GoToFunctionItem key={key} f={f} closeDrawer={closeDrawer} />
           ))}
         </List>
+      ) : (
+        <List subheader={<ListSubheader>No ABI loaded</ListSubheader>} />
       )}
     </Drawer>
   );

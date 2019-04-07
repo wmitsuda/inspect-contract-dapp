@@ -10,44 +10,25 @@ import FunctionInput from "./FunctionInput";
 
 const FunctionInputs = ({
   f,
-  inputs,
-  handleChange,
-  handleBlur,
-  disabled,
+  isSubmitting,
   setFieldValue,
   setFieldTouched,
-  values,
   errors,
   touched
 }) => {
-  const setValue = field => value => {
-    setFieldValue(field, value, false);
-    setFieldTouched(field);
-  };
+  const { inputs } = f;
 
   return (
     <>
       {inputs.length > 0 && (
         <CardContent>
           {inputs.map((input, key) => (
-            <FunctionInput
-              key={key}
-              index={key}
-              input={input}
-              handleChange={handleChange}
-              handleBlur={handleBlur}
-              disabled={disabled}
-              setValue={setValue(input.name)}
-              value={values[input.name]}
-              errors={errors[input.name]}
-              touched={touched[input.name]}
-            />
+            <FunctionInput key={key} input={input} />
           ))}
           {f.payable && (
             <Field
               name="payableValue"
-              disabled={disabled}
-              render={({ field, form }) => (
+              render={({ field, form: { isSubmitting } }) => (
                 <TextField
                   label="Pay ETH"
                   helperText={
@@ -56,7 +37,7 @@ const FunctionInputs = ({
                       : "Enter a value in ETH to be paid to the function call"
                   }
                   error={errors["payableValue"] && touched["payableValue"]}
-                  disabled={disabled}
+                  disabled={isSubmitting}
                   margin="normal"
                   required
                   fullWidth
@@ -67,7 +48,7 @@ const FunctionInputs = ({
           )}
         </CardContent>
       )}
-      <FunctionActions f={f} disabled={disabled} />
+      <FunctionActions f={f} disabled={isSubmitting} />
     </>
   );
 };

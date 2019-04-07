@@ -12,7 +12,7 @@ import FunctionInputs from "./FunctionInputs";
 import FunctionOutputs from "./FunctionOutputs";
 import FunctionEvents from "./FunctionEvents";
 
-const FunctionDefinition = ({ f, index, contract, eventABI }) => {
+const FunctionDefinition = ({ f, contract, eventABI }) => {
   const [returnValues, setReturnValues] = useState();
   const [returnedEvents, setReturnedEvents] = useState();
   const initialValues = useMemo(
@@ -151,34 +151,26 @@ const FunctionTitle = React.memo(
   ))
 );
 
-const FunctionForm = ({
-  f,
-  returnValues,
-  returnedEvents,
-  isSubmitting,
-  ...rest
-}) => (
-  <>
-    <Form className="needs-validation" noValidate>
-      <FunctionInputs
-        f={f}
-        inputs={f.inputs}
-        disabled={isSubmitting}
-        {...rest}
-      />
-    </Form>
-    <Divider />
-    {!isSubmitting && returnValues && (
-      <FunctionOutputs
-        outputs={f.outputs}
-        processing={isSubmitting}
-        returnValues={returnValues}
-      />
-    )}
-    {!isSubmitting && returnedEvents && (
-      <FunctionEvents events={returnedEvents} />
-    )}
-  </>
-);
+const FunctionForm = ({ f, returnValues, returnedEvents, ...rest }) => {
+  const { isSubmitting } = rest;
+  return (
+    <>
+      <Form className="needs-validation" noValidate>
+        <FunctionInputs f={f} {...rest} />
+      </Form>
+      <Divider />
+      {!isSubmitting && returnValues && (
+        <FunctionOutputs
+          outputs={f.outputs}
+          processing={isSubmitting}
+          returnValues={returnValues}
+        />
+      )}
+      {!isSubmitting && returnedEvents && (
+        <FunctionEvents events={returnedEvents} />
+      )}
+    </>
+  );
+};
 
 export default FunctionDefinition;

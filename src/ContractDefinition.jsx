@@ -39,10 +39,9 @@ const ContractDefinition = ({ address, abi, abiSetter }) => {
         </Grid>
         {contract && abiFunctions.length > 0 ? (
           abiFunctions.map((f, key) => (
-            <Grid key={key} item>
+            <Grid key={f.name} item>
               <FunctionDefinition
                 f={f}
-                index={key}
                 contract={contract}
                 eventABI={abiEvents}
               />
@@ -50,16 +49,7 @@ const ContractDefinition = ({ address, abi, abiSetter }) => {
           ))
         ) : (
           <Grid item>
-            <Card>
-              <CardContent>
-                <Typography align="center" variant="h5" color="textPrimary">
-                  <span role="img" aria-label="hint">
-                    💡
-                  </span>{" "}
-                  Load some ABI first
-                </Typography>
-              </CardContent>
-            </Card>
+            <NoAbiCard />
           </Grid>
         )}
       </Grid>
@@ -72,5 +62,18 @@ const ContractSection = styled.section`
   background-color: #eeeeee;
   padding: 2rem;
 `;
+
+const NoAbiCard = () => (
+  <Card>
+    <CardContent>
+      <Typography align="center" variant="h5" color="textPrimary">
+        <span role="img" aria-label="hint">
+          💡
+        </span>{" "}
+        Load some ABI first
+      </Typography>
+    </CardContent>
+  </Card>
+);
 
 export default ContractDefinition;
