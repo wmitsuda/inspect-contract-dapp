@@ -3,6 +3,7 @@ import Grid from "@material-ui/core/Grid";
 import Card from "@material-ui/core/Card";
 import CardHeader from "@material-ui/core/CardHeader";
 import CardActions from "@material-ui/core/CardActions";
+import CardContent from "@material-ui/core/CardContent";
 import Divider from "@material-ui/core/Divider";
 import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
@@ -57,9 +58,16 @@ const ContractDefinition = ({ address, abi, abiSetter }) => {
           ))
         ) : (
           <Grid item>
-            <Typography align="center" variant="h3" color="inherit">
-              Load some ABI!!!
-            </Typography>
+            <Card>
+              <CardContent>
+                <Typography align="center" variant="h5" color="textPrimary">
+                  <span role="img" aria-label="hint">
+                    💡
+                  </span>{" "}
+                  Load some ABI first
+                </Typography>
+              </CardContent>
+            </Card>
           </Grid>
         )}
       </Grid>
