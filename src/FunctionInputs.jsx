@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import CardContent from "@material-ui/core/CardContent";
 import CardActions from "@material-ui/core/CardActions";
 import TextField from "@material-ui/core/TextField";
@@ -6,11 +6,11 @@ import Button from "@material-ui/core/Button";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import styled from "styled-components";
 import { Field } from "formik";
+import { FunctionContext } from "./FunctionContext";
 import FunctionInput from "./FunctionInput";
 import { useEtherscan } from "./Web3Context";
 
 const FunctionInputs = ({
-  f,
   transactionHash,
   isSubmitting,
   setFieldValue,
@@ -18,6 +18,7 @@ const FunctionInputs = ({
   errors,
   touched
 }) => {
+  const f = useContext(FunctionContext);
   const { inputs } = f;
 
   return (

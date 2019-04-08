@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useRef } from "react";
+import React, { useState, useMemo, useRef, useContext } from "react";
 import { withRouter } from "react-router";
 import { HashLink as Link } from "react-router-hash-link";
 import Card from "@material-ui/core/Card";
@@ -10,6 +10,7 @@ import Button from "@material-ui/core/Button";
 import { Formik, Form } from "formik";
 import { useSnackbar } from "notistack";
 import AnchorLink from "./AnchorLink";
+import { FunctionContext } from "./FunctionContext";
 import FunctionInputs from "./FunctionInputs";
 import FunctionOutputs from "./FunctionOutputs";
 import FunctionEvents from "./FunctionEvents";
@@ -116,25 +117,26 @@ const FunctionDefinition = ({ f, contract, eventABI }) => {
   };
 
   return (
-    <Card>
-      <FunctionTitle f={f} />
-      <Divider />
-      <Formik
-        initialValues={initialValues}
-        validateOnChange={false}
-        onSubmit={handleSubmit}
-        render={props => (
-          <FunctionForm
-            f={f}
-            resultRef={resultRef}
-            transactionHash={transactionHash}
-            returnValues={returnValues}
-            returnedEvents={returnedEvents}
-            {...props}
-          />
-        )}
-      />
-    </Card>
+    <FunctionContext.Provider value={f}>
+      <Card>
+        <FunctionTitle />
+        <Divider />
+        <Formik
+          initialValues={initialValues}
+          validateOnChange={false}
+          onSubmit={handleSubmit}
+          render={props => (
+            <FunctionForm
+              resultRef={resultRef}
+              transactionHash={transactionHash}
+              returnValues={returnValues}
+              returnedEvents={returnedEvents}
+              {...props}
+            />
+          )}
+        />
+      </Card>
+    </FunctionContext.Provider>
   );
 };
 
@@ -152,41 +154,46 @@ const functionReturns = f => {
   );
 };
 
-const FunctionTitle = withRouter(({ f, location: { pathname } }) => (
-  <CardHeader
-    title={
-      <Grid alignItems="baseline" spacing={8} container>
-        <AnchorLink id={f.name} />
-        <Grid item>
-          <Typography variant="h6" color="textSecondary">
-            <small>function</small>
-          </Typography>
-        </Grid>
-        <Grid item>
-          <Typography variant="h6" color="textPrimary">
-            <strong>{` ${f.name}(${f.inputs.length > 0 ? "..." : ""})`}</strong>
-          </Typography>
-        </Grid>
-        <Grid item>
-          <Typography variant="h6" color="textSecondary">
-            <small>
-              {" "}
-              public {f.constant ? " view" : ""}
-              {f.payable ? " payable" : ""}
-              {functionReturns(f)}
-            </small>
-            &nbsp;
-            <Link to={{ pathname: pathname, hash: f.name }}>#</Link>
-          </Typography>
-        </Grid>
-      </Grid>
-    }
-    subheader={`interfaceId (${f.signature})`}
-  />
-));
+const FunctionTitle = withRouter(({ location: { pathname } }) => {
+  const f = useContext(FunctionContext);
+
+  return (
+    <CardHeader
+      title={<FunctionTitleHeader f={f} pathname={pathname} />}
+      subheader={`interfaceId (${f.signature})`}
+    />
+  );
+});
+
+const FunctionTitleHeader = ({ f, pathname }) => (
+  <Grid alignItems="baseline" spacing={8} container>
+    <AnchorLink id={f.name} />
+    <Grid item>
+      <Typography variant="h6" color="textSecondary">
+        <small>function</small>
+      </Typography>
+    </Grid>
+    <Grid item>
+      <Typography variant="h6" color="textPrimary">
+        <strong>{` ${f.name}(${f.inputs.length > 0 ? "..." : ""})`}</strong>
+      </Typography>
+    </Grid>
+    <Grid item>
+      <Typography variant="h6" color="textSecondary">
+        <small>
+          {" "}
+          public {f.constant ? " view" : ""}
+          {f.payable ? " payable" : ""}
+          {functionReturns(f)}
+        </small>
+        &nbsp;
+        <Link to={{ pathname: pathname, hash: f.name }}>#</Link>
+      </Typography>
+    </Grid>
+  </Grid>
+);
 
 const FunctionForm = ({
-  f,
   transactionHash,
   returnValues,
   returnedEvents,
@@ -194,16 +201,16 @@ const FunctionForm = ({
   ...rest
 }) => {
   const { isSubmitting } = rest;
+
   return (
     <>
       <Form className="needs-validation" noValidate>
-        <FunctionInputs f={f} transactionHash={transactionHash} {...rest} />
+        <FunctionInputs transactionHash={transactionHash} {...rest} />
       </Form>
       <Divider />
       <div ref={resultRef} />
       {!isSubmitting && returnValues && (
         <FunctionOutputs
-          outputs={f.outputs}
           processing={isSubmitting}
           returnValues={returnValues}
         />
