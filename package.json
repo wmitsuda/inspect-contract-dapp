@@ -1,6 +1,6 @@
 {
-  "name": "contract-inspector",
-  "version": "0.1.0",
+  "name": "inspect-contract-dapp",
+  "version": "1.0.0",
   "private": true,
   "dependencies": {
     "@material-ui/core": "^3.9.3",
