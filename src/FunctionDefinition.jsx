@@ -37,7 +37,11 @@ const FunctionDefinition = ({ f, contract, eventABI }) => {
       // Call
       try {
         const outputs = await method.call();
-        setReturnValues([outputs]);
+        if (f.outputs.length === 1) {
+          setReturnValues([outputs]);
+        } else if (f.outputs.length > 1) {
+          setReturnValues(outputs);
+        }
       } catch (err) {
         console.log("Something went wrong with the call operation");
         console.log(err);
@@ -47,7 +51,11 @@ const FunctionDefinition = ({ f, contract, eventABI }) => {
       // Send
       try {
         const outputs = await method.send();
-        setReturnValues([outputs.status]);
+        if (f.outputs.length === 1) {
+          setReturnValues([outputs]);
+        } else if (f.outputs.length > 1) {
+          setReturnValues(outputs);
+        }
 
         // Extract and parse received events
         const processEvent = e => {

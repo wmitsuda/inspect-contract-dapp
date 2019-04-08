@@ -43,7 +43,7 @@ const ReturnValue = ({ attrName, attrs: { index, type, value } }) => {
       <TableCell>
         {attrName ? attrName : `unnamed #${index}`} ({type})
       </TableCell>
-      <TableCell>{value && displayValue}</TableCell>
+      <TableCell>{displayValue}</TableCell>
       <TableCell>
         {value && isNumeric && (
           <span className="form-check form-check-inline">
