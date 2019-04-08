@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useRef } from "react";
 import { withRouter } from "react-router";
 import { HashLink as Link } from "react-router-hash-link";
 import Card from "@material-ui/core/Card";
@@ -6,7 +6,9 @@ import CardHeader from "@material-ui/core/CardHeader";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
 import Divider from "@material-ui/core/Divider";
+import Button from "@material-ui/core/Button";
 import { Formik, Form } from "formik";
+import { useSnackbar } from "notistack";
 import AnchorLink from "./AnchorLink";
 import FunctionInputs from "./FunctionInputs";
 import FunctionOutputs from "./FunctionOutputs";
@@ -20,6 +22,8 @@ const FunctionDefinition = ({ f, contract, eventABI }) => {
       f.inputs.reduce((o, input) => Object.assign(o, { [input.name]: "" }), {}),
     [f]
   );
+  const { enqueueSnackbar } = useSnackbar();
+  const resultRef = useRef(null);
 
   const handleSubmit = async (values, { setSubmitting }) => {
     // Calculate parameters
@@ -31,8 +35,14 @@ const FunctionDefinition = ({ f, contract, eventABI }) => {
     const method = contract.methods[f.name](...args);
     if (f.constant) {
       // Call
-      const outputs = await method.call();
-      setReturnValues([outputs]);
+      try {
+        const outputs = await method.call();
+        setReturnValues([outputs]);
+      } catch (err) {
+        console.log("Something went wrong with the call operation");
+        console.log(err);
+        enqueueSnackbar("Something went wrong with the call operation");
+      }
     } else {
       // Send
       try {
@@ -71,9 +81,23 @@ const FunctionDefinition = ({ f, contract, eventABI }) => {
         });
         evs.sort((a, b) => a.logIndex - b.logIndex);
         setReturnedEvents(evs);
+        enqueueSnackbar("Send operation has been completed", {
+          action: (
+            <Button
+              size="small"
+              color="secondary"
+              onClick={() =>
+                window.scrollTo(0, resultRef.current.offsetTop - 76)
+              }
+            >
+              Go to result
+            </Button>
+          )
+        });
       } catch (err) {
         console.log("User possibly has cancelled the send operation");
         console.log(err);
+        enqueueSnackbar("Something went wrong with the send operation");
       }
     }
 
@@ -91,6 +115,7 @@ const FunctionDefinition = ({ f, contract, eventABI }) => {
         render={props => (
           <FunctionForm
             f={f}
+            resultRef={resultRef}
             returnValues={returnValues}
             returnedEvents={returnedEvents}
             {...props}
@@ -147,7 +172,14 @@ const FunctionTitle = withRouter(({ f, location: { pathname } }) => (
     subheader={`sig (${f.signature})`}
   />
 ));
-const FunctionForm = ({ f, returnValues, returnedEvents, ...rest }) => {
+
+const FunctionForm = ({
+  f,
+  returnValues,
+  returnedEvents,
+  resultRef,
+  ...rest
+}) => {
   const { isSubmitting } = rest;
   return (
     <>
@@ -155,6 +187,7 @@ const FunctionForm = ({ f, returnValues, returnedEvents, ...rest }) => {
         <FunctionInputs f={f} {...rest} />
       </Form>
       <Divider />
+      <div ref={resultRef} />
       {!isSubmitting && returnValues && (
         <FunctionOutputs
           outputs={f.outputs}

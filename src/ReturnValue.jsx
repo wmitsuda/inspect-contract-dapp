@@ -6,7 +6,7 @@ import IconButton from "@material-ui/core/IconButton";
 import OpenInNew from "mdi-material-ui/OpenInNew";
 import ContentCopy from "mdi-material-ui/ContentCopy";
 import { CopyToClipboard } from "react-copy-to-clipboard";
-import { useSnackbar } from "./SnackbarHooks";
+import { useSnackbar } from "notistack";
 import { useEtherscan } from "./Web3Context";
 import ExternalLink from "./ExternalLink";
 
@@ -14,10 +14,7 @@ const ReturnValue = ({ attrName, attrs: { index, type, value } }) => {
   const [formatValue, setFormatValue] = useState(true);
   const etherscan = useEtherscan();
 
-  const [showSnackbar, ClipboardSnackbar] = useSnackbar(
-    "clipboard",
-    "Address copied to clipboard"
-  );
+  const { enqueueSnackbar } = useSnackbar();
 
   const isNumeric = useMemo(
     () => type.startsWith("int") || type.startsWith("uint"),
@@ -66,7 +63,10 @@ const ReturnValue = ({ attrName, attrs: { index, type, value } }) => {
           <span>
             &nbsp;
             <Tooltip title="Copy to clipboard">
-              <CopyToClipboard text={value} onCopy={showSnackbar}>
+              <CopyToClipboard
+                text={value}
+                onCopy={() => enqueueSnackbar("Address copied to clipboard")}
+              >
                 <IconButton aria-label="Copy address">
                   <ContentCopy />
                 </IconButton>
@@ -83,7 +83,6 @@ const ReturnValue = ({ attrName, attrs: { index, type, value } }) => {
           </span>
         )}
       </TableCell>
-      <ClipboardSnackbar />
     </TableRow>
   );
 };

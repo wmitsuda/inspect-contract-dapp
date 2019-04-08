@@ -5,6 +5,7 @@ import {
   Route,
   Redirect
 } from "react-router-dom";
+import { SnackbarProvider } from "notistack";
 import Web3 from "web3";
 import { Web3Context, AccountContext, useDefaultAccount } from "./Web3Context";
 import ContractPage from "./ContractPage";
@@ -29,21 +30,23 @@ const App = () => {
         <AccountContext.Provider
           value={{ selectedAccount, setSelectedAccount }}
         >
-          <Switch>
-            <Route
-              path="/:contractAddress"
-              render={props => (
-                <ContractPage abi={abi} abiSetter={setAbi} {...props} />
-              )}
-            />
-            <Route
-              path="/"
-              render={() => (
-                <Redirect to="0xD7758b318edd7aD12A2A0142C56c335be1607A79" />
-              )}
-              exact
-            />
-          </Switch>
+          <SnackbarProvider maxSnack={3} autoHideDuration={6000}>
+            <Switch>
+              <Route
+                path="/:contractAddress"
+                render={props => (
+                  <ContractPage abi={abi} abiSetter={setAbi} {...props} />
+                )}
+              />
+              <Route
+                path="/"
+                render={() => (
+                  <Redirect to="0xD7758b318edd7aD12A2A0142C56c335be1607A79" />
+                )}
+                exact
+              />
+            </Switch>
+          </SnackbarProvider>
         </AccountContext.Provider>
       </Web3Context.Provider>
     </Router>
