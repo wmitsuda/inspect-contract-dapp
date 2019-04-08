@@ -7,7 +7,7 @@
     "@material-ui/icons": "^3.0.2",
     "ethereum-react-components": "^1.14.0",
     "ethers": "^4.0.27",
-    "formik": "^1.5.1",
+    "formik": "^1.5.2",
     "mdi-material-ui": "^5.10.0",
     "react": "^16.8.6",
     "react-copy-to-clipboard": "^5.0.1",
