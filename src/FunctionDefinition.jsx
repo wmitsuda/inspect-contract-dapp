@@ -177,7 +177,7 @@ const FunctionTitle = withRouter(({ f, location: { pathname } }) => (
         </Grid>
       </Grid>
     }
-    subheader={`sig (${f.signature})`}
+    subheader={`interfaceId (${f.signature})`}
   />
 ));
 
