@@ -25,9 +25,6 @@ const FunctionInputs = ({
     <>
       {inputs.length > 0 && (
         <CardContent>
-          {inputs.map((input, key) => (
-            <FunctionInput key={key} input={input} />
-          ))}
           {f.payable && (
             <Field
               name="payableValue"
@@ -49,6 +46,9 @@ const FunctionInputs = ({
               )}
             />
           )}
+          {inputs.map((input, key) => (
+            <FunctionInput key={key} input={input} />
+          ))}
         </CardContent>
       )}
       <FunctionActions
