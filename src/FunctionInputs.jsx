@@ -7,9 +7,11 @@ import CircularProgress from "@material-ui/core/CircularProgress";
 import styled from "styled-components";
 import { Field } from "formik";
 import FunctionInput from "./FunctionInput";
+import { useEtherscan } from "./Web3Context";
 
 const FunctionInputs = ({
   f,
+  transactionHash,
   isSubmitting,
   setFieldValue,
   setFieldTouched,
@@ -48,30 +50,50 @@ const FunctionInputs = ({
           )}
         </CardContent>
       )}
-      <FunctionActions f={f} disabled={isSubmitting} />
+      <FunctionActions
+        f={f}
+        transactionHash={transactionHash}
+        disabled={isSubmitting}
+      />
     </>
   );
 };
 
-const FunctionActions = React.memo(({ f: { constant }, disabled }) => (
-  <CardActions>
-    <SpinningButton
-      variant="contained"
-      color="primary"
-      type="submit"
-      disabled={disabled}
-      fullWidth
-    >
-      {disabled ? (
-        <CircularProgress size={24} />
-      ) : constant ? (
-        "Call"
-      ) : (
-        "Send..."
-      )}
-    </SpinningButton>
-  </CardActions>
-));
+const FunctionActions = React.memo(
+  ({ f: { constant }, transactionHash, disabled }) => {
+    const etherscan = useEtherscan();
+
+    return (
+      <CardActions>
+        <SpinningButton
+          variant="contained"
+          color="primary"
+          type="submit"
+          disabled={disabled}
+          fullWidth
+        >
+          {disabled ? (
+            <CircularProgress size={24} />
+          ) : constant ? (
+            "Call"
+          ) : (
+            "Send..."
+          )}
+        </SpinningButton>
+
+        {transactionHash && (
+          <Button
+            href={etherscan.getTxURL(transactionHash)}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Open in Etherscan.io
+          </Button>
+        )}
+      </CardActions>
+    );
+  }
+);
 
 const SpinningButton = styled(Button)`
   max-width: 5rem;

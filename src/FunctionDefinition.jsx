@@ -15,6 +15,7 @@ import FunctionOutputs from "./FunctionOutputs";
 import FunctionEvents from "./FunctionEvents";
 
 const FunctionDefinition = ({ f, contract, eventABI }) => {
+  const [transactionHash, setTransactionHash] = useState();
   const [returnValues, setReturnValues] = useState();
   const [returnedEvents, setReturnedEvents] = useState();
   const initialValues = useMemo(
@@ -50,7 +51,9 @@ const FunctionDefinition = ({ f, contract, eventABI }) => {
     } else {
       // Send
       try {
-        const outputs = await method.send();
+        const outputs = await method.send().on("transactionHash", value => {
+          setTransactionHash(value);
+        });
         if (f.outputs.length === 1) {
           setReturnValues([outputs]);
         } else if (f.outputs.length > 1) {
@@ -124,6 +127,7 @@ const FunctionDefinition = ({ f, contract, eventABI }) => {
           <FunctionForm
             f={f}
             resultRef={resultRef}
+            transactionHash={transactionHash}
             returnValues={returnValues}
             returnedEvents={returnedEvents}
             {...props}
@@ -183,6 +187,7 @@ const FunctionTitle = withRouter(({ f, location: { pathname } }) => (
 
 const FunctionForm = ({
   f,
+  transactionHash,
   returnValues,
   returnedEvents,
   resultRef,
@@ -192,7 +197,7 @@ const FunctionForm = ({
   return (
     <>
       <Form className="needs-validation" noValidate>
-        <FunctionInputs f={f} {...rest} />
+        <FunctionInputs f={f} transactionHash={transactionHash} {...rest} />
       </Form>
       <Divider />
       <div ref={resultRef} />
