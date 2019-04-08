@@ -11,7 +11,6 @@ import ReturnValue from "./ReturnValue";
 
 const FunctionOutputs = ({ processing, returnValues }) => {
   const f = useContext(FunctionContext);
-  const { outputs } = f;
 
   return (
     <CardContent>
@@ -25,7 +24,7 @@ const FunctionOutputs = ({ processing, returnValues }) => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {outputs.map((output, key) => (
+          {f.outputs.map((output, key) => (
             <ReturnValue
               key={key}
               attrName={output.name}

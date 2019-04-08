@@ -88,7 +88,7 @@ const FunctionActions = React.memo(
             target="_blank"
             rel="noopener noreferrer"
           >
-            Open in Etherscan.io
+            Open TX in Etherscan.io
           </Button>
         )}
       </CardActions>
