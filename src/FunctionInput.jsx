@@ -59,6 +59,32 @@ const handleBytesValidation = (size, web3, value) => {
   return errorMessage;
 };
 
+const handleUintValidation = value => {
+  const defValidation = handleDefaultValidation(value);
+  if (defValidation) {
+    return defValidation;
+  }
+
+  let errorMessage;
+  if (!/^\s*[\d]+\s*$/.test(value)) {
+    errorMessage = "Not an unsigned numeric value";
+  }
+  return errorMessage;
+};
+
+const handleIntValidation = value => {
+  const defValidation = handleDefaultValidation(value);
+  if (defValidation) {
+    return defValidation;
+  }
+
+  let errorMessage;
+  if (!/^\s*[-+]?[\d]+\s*$/.test(value)) {
+    errorMessage = "Not a signed numeric value";
+  }
+  return errorMessage;
+};
+
 const handleDefaultValidation = value => {
   let errorMessage;
   if (!value || value.trim() === "") {
@@ -79,6 +105,10 @@ const FunctionInput = ({ input, hideType }) => {
       return handleAddressValidation(web3, value);
     } else if (input.type.startsWith("bytes")) {
       return handleBytesValidation(parseInt(input.type.substr(5)), web3, value);
+    } else if (input.type.startsWith("uint")) {
+      return handleUintValidation(value);
+    } else if (input.type.startsWith("int")) {
+      return handleIntValidation(value);
     }
     return handleDefaultValidation(value);
   };
