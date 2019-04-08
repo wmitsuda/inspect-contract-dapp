@@ -1,12 +1,12 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import CssBaseline from "@material-ui/core/CssBaseline";
-import { DrawerContext } from "./DrawerContext";
+import { DrawerContext, useDrawerState } from "./DrawerContext";
 import GlobalAppBar from "./GlobalAppBar";
 import ContractDefinition from "./ContractDefinition";
 
 const ContractPage = ({ match, abi, abiSetter }) => {
   const { contractAddress } = match.params;
-  const [isDrawerOpen, setDrawerOpen] = useState(false);
+  const drawerState = useDrawerState();
 
   useEffect(() => {
     document.title = `Smart Contract Inspector | ${contractAddress}`;
@@ -15,7 +15,7 @@ const ContractPage = ({ match, abi, abiSetter }) => {
   return (
     <main>
       <CssBaseline />
-      <DrawerContext.Provider value={{ isDrawerOpen, setDrawerOpen }}>
+      <DrawerContext.Provider value={drawerState}>
         <GlobalAppBar />
         <ContractDefinition
           address={contractAddress}
