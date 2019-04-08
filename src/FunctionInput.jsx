@@ -1,4 +1,10 @@
 import React, { useContext } from "react";
+import FormControl from "@material-ui/core/FormControl";
+import FormLabel from "@material-ui/core/FormLabel";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
+import FormHelperText from "@material-ui/core/FormHelperText";
+import RadioGroup from "@material-ui/core/RadioGroup";
+import Radio from "@material-ui/core/Radio";
 import TextField from "@material-ui/core/TextField";
 import InputAdornment from "@material-ui/core/InputAdornment";
 import Tooltip from "@material-ui/core/Tooltip";
@@ -13,6 +19,14 @@ const handleStringValidation = value => {
   let errorMessage;
   if (!value) {
     errorMessage = "Value is required";
+  }
+  return errorMessage;
+};
+
+const handleBoolValidation = value => {
+  let errorMessage;
+  if (value !== "true" && value !== "false") {
+    errorMessage = "Must select a value";
   }
   return errorMessage;
 };
@@ -59,6 +73,8 @@ const FunctionInput = ({ input, hideType }) => {
   const handleValidation = value => {
     if (input.type === "string") {
       return handleStringValidation(value);
+    } else if (input.type === "bool") {
+      return handleBoolValidation(value);
     } else if (input.type === "address") {
       return handleAddressValidation(web3, value);
     } else if (input.type.startsWith("bytes")) {
@@ -70,16 +86,11 @@ const FunctionInput = ({ input, hideType }) => {
   return (
     <>
       {input.type === "bool" ? (
-        <>
-          <span>
-            <Field type="radio" name={input.name} id={`${input.name}_true`} />
-            <label htmlFor={`${input.name}_true`}>true</label>
-          </span>{" "}
-          <span>
-            <Field type="radio" name={input.name} id={`${input.name}_false`} />
-            <label htmlFor={`${input.name}_false`}>false</label>
-          </span>
-        </>
+        <Field
+          name={input.name}
+          validate={handleValidation}
+          render={props => <RegularRadioGroup input={input} {...props} />}
+        />
       ) : (
         <Field
           name={input.name}
@@ -90,6 +101,40 @@ const FunctionInput = ({ input, hideType }) => {
         />
       )}
     </>
+  );
+};
+
+const RegularRadioGroup = ({
+  input,
+  field,
+  form: { isSubmitting, errors, touched }
+}) => {
+  const myErrors = errors[input.name];
+  const myTouched = touched[input.name];
+
+  return (
+    <FormControl component="fieldset" error={myErrors && myTouched} required>
+      <FormLabel component="legend">
+        {input.type} {input.name}
+      </FormLabel>
+      <RadioGroup row {...field}>
+        <FormControlLabel
+          value="true"
+          control={<Radio />}
+          label="true"
+          disabled={isSubmitting}
+        />
+        <FormControlLabel
+          value="false"
+          control={<Radio />}
+          label="false"
+          disabled={isSubmitting}
+        />
+      </RadioGroup>
+      <FormHelperText>
+        {myErrors && myTouched ? myErrors : `(${input.type})`}
+      </FormHelperText>
+    </FormControl>
   );
 };
 
