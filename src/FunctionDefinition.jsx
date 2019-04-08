@@ -156,16 +156,17 @@ const functionReturns = f => {
 
 const FunctionTitle = withRouter(({ location: { pathname } }) => {
   const f = useContext(FunctionContext);
-
-  return (
-    <CardHeader
-      title={<FunctionTitleHeader f={f} pathname={pathname} />}
-      subheader={`interfaceId (${f.signature})`}
-    />
-  );
+  return <FunctionHeader f={f} pathname={pathname} />;
 });
 
-const FunctionTitleHeader = ({ f, pathname }) => (
+const FunctionHeader = React.memo(({ f, pathname }) => (
+  <CardHeader
+    title={<FunctionHeaderTitle f={f} pathname={pathname} />}
+    subheader={`interfaceId (${f.signature})`}
+  />
+));
+
+const FunctionHeaderTitle = ({ f, pathname }) => (
   <Grid alignItems="baseline" spacing={8} container>
     <AnchorLink id={f.name} />
     <Grid item>
