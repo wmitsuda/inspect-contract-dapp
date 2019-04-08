@@ -115,42 +115,38 @@ const functionReturns = f => {
   );
 };
 
-const FunctionTitle = React.memo(
-  withRouter(({ f, location: { pathname } }) => (
-    <CardHeader
-      title={
-        <Grid alignItems="baseline" spacing={8} container>
-          <AnchorLink id={f.name} />
-          <Grid item>
-            <Typography variant="h6" color="textSecondary">
-              <small>function</small>
-            </Typography>
-          </Grid>
-          <Grid item>
-            <Typography variant="h6" color="textPrimary">
-              <strong>{` ${f.name}(${
-                f.inputs.length > 0 ? "..." : ""
-              })`}</strong>
-            </Typography>
-          </Grid>
-          <Grid item>
-            <Typography variant="h6" color="textSecondary">
-              <small>
-                {" "}
-                public {f.constant ? " view" : ""}
-                {f.payable ? " payable" : ""}
-                {functionReturns(f)}
-              </small>
-              &nbsp;
-              <Link to={{ pathname: pathname, hash: f.name }}>#</Link>
-            </Typography>
-          </Grid>
+const FunctionTitle = withRouter(({ f, location: { pathname } }) => (
+  <CardHeader
+    title={
+      <Grid alignItems="baseline" spacing={8} container>
+        <AnchorLink id={f.name} />
+        <Grid item>
+          <Typography variant="h6" color="textSecondary">
+            <small>function</small>
+          </Typography>
         </Grid>
-      }
-    />
-  ))
-);
-
+        <Grid item>
+          <Typography variant="h6" color="textPrimary">
+            <strong>{` ${f.name}(${f.inputs.length > 0 ? "..." : ""})`}</strong>
+          </Typography>
+        </Grid>
+        <Grid item>
+          <Typography variant="h6" color="textSecondary">
+            <small>
+              {" "}
+              public {f.constant ? " view" : ""}
+              {f.payable ? " payable" : ""}
+              {functionReturns(f)}
+            </small>
+            &nbsp;
+            <Link to={{ pathname: pathname, hash: f.name }}>#</Link>
+          </Typography>
+        </Grid>
+      </Grid>
+    }
+    subheader={`sig (${f.signature})`}
+  />
+));
 const FunctionForm = ({ f, returnValues, returnedEvents, ...rest }) => {
   const { isSubmitting } = rest;
   return (

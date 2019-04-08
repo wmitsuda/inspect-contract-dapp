@@ -13,6 +13,8 @@ import { Formik, Form } from "formik";
 import AnchorLink from "./AnchorLink";
 import FunctionInput from "./FunctionInput";
 import erc20ABI from "./abi/ERC20.json";
+import erc165ABI from "./abi/ERC165.json";
+import erc721ABI from "./abi/ERC721.json";
 import demoABI from "./abi/Demo.json";
 
 const OverviewCard = ({ address, abiSetter, history }) => {
@@ -104,9 +106,18 @@ const AbiCardActions = React.memo(({ abiSetter }) => (
     <UsePredefinedABI abiSetter={abiSetter} abi={erc20ABI}>
       Use ERC20
     </UsePredefinedABI>
-    <UsePredefinedABI abiSetter={abiSetter} abi={demoABI}>
-      Use Demo ABI
+    <UsePredefinedABI abiSetter={abiSetter} abi={erc165ABI}>
+      Use ERC165
     </UsePredefinedABI>
+    <UsePredefinedABI abiSetter={abiSetter} abi={erc721ABI}>
+      Use ERC721
+    </UsePredefinedABI>
+
+    {process.env.NODE_ENV === "development" && (
+      <UsePredefinedABI abiSetter={abiSetter} abi={demoABI}>
+        Use Demo ABI
+      </UsePredefinedABI>
+    )}
   </CardActions>
 ));
 
