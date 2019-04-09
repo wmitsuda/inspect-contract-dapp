@@ -113,39 +113,39 @@ const FunctionInput = ({ input, hideType }) => {
     return handleDefaultValidation(value);
   };
 
+  if (input.type === "bool") {
+    return (
+      <Field
+        name={input.name}
+        validate={handleValidation}
+        render={props => <RegularRadioGroup input={input} {...props} />}
+      />
+    );
+  }
+
   return (
-    <>
-      {input.type === "bool" ? (
-        <Field
-          name={input.name}
-          validate={handleValidation}
-          render={props => <RegularRadioGroup input={input} {...props} />}
-        />
-      ) : (
-        <Field
-          name={input.name}
-          validate={handleValidation}
-          render={props => (
-            <RegularTextField input={input} hideType={hideType} {...props} />
-          )}
-        />
+    <Field
+      name={input.name}
+      validate={handleValidation}
+      render={props => (
+        <RegularTextField input={input} hideType={hideType} {...props} />
       )}
-    </>
+    />
   );
 };
 
 const RegularRadioGroup = ({
-  input,
+  input: { name, type },
   field,
   form: { isSubmitting, errors, touched }
 }) => {
-  const myErrors = errors[input.name];
-  const myTouched = touched[input.name];
+  const myErrors = errors[name];
+  const myTouched = touched[name];
 
   return (
     <FormControl component="fieldset" error={myErrors && myTouched} required>
       <FormLabel component="legend">
-        {input.type} {input.name}
+        {type} {name}
       </FormLabel>
       <RadioGroup row {...field}>
         <FormControlLabel
@@ -161,23 +161,22 @@ const RegularRadioGroup = ({
           disabled={isSubmitting}
         />
       </RadioGroup>
-      <FormHelperText>
-        {myErrors && myTouched ? myErrors : `(${input.type})`}
-      </FormHelperText>
+      <FormHelperText>{errorOrHelp(myErrors, myTouched, type)}</FormHelperText>
     </FormControl>
   );
 };
 
 const RegularTextField = ({
-  input,
+  input: { name, type },
   hideType,
   field,
   form: { isSubmitting, errors, touched, setFieldValue, setFieldTouched }
 }) => {
   const setValue = value => {
-    setFieldValue(input.name, value, false);
-    setFieldTouched(input.name);
+    setFieldValue(name, value, false);
+    setFieldTouched(name);
   };
+
   const [isScanning, toggleScanning, QRReader] = useQRReader(setValue);
 
   const web3 = useContext(Web3Context);
@@ -187,24 +186,23 @@ const RegularTextField = ({
     setValue(defaultAccount);
   };
 
-  const myErrors = errors[input.name];
-  const myTouched = touched[input.name];
+  const myErrors = errors[name];
+  const myTouched = touched[name];
 
   return (
     <>
       <TextField
         {...field}
-        label={`${hideType ? "" : input.type} ${input.name}`}
-        helperText={myErrors && myTouched ? myErrors : `(${input.type})`}
+        label={`${hideType ? "" : type} ${name}`}
+        helperText={errorOrHelp(myErrors, myTouched, type)}
         error={myErrors && myTouched}
         disabled={isSubmitting}
         margin="normal"
         required
         fullWidth
         InputProps={
-          input.type !== "address"
-            ? {}
-            : {
+          type === "address"
+            ? {
                 endAdornment: (
                   <AddressInputAdornment
                     isScanning={isScanning}
@@ -214,11 +212,16 @@ const RegularTextField = ({
                   />
                 )
               }
+            : {}
         }
       />
       <QRReader />
     </>
   );
+};
+
+const errorOrHelp = (errors, touched, type) => {
+  return errors && touched ? errors : `(${type})`;
 };
 
 const AddressInputAdornment = ({
