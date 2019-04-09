@@ -15,109 +15,11 @@ import AccountArrowLeftOutline from "mdi-material-ui/AccountArrowLeftOutline";
 import { Field } from "formik";
 import { Web3Context, useQRReader } from "./Web3Context";
 
-const handleStringValidation = value => {
-  let errorMessage;
-  if (!value) {
-    errorMessage = "Value is required";
-  }
-  return errorMessage;
-};
-
-const handleBoolValidation = value => {
-  let errorMessage;
-  if (value !== "true" && value !== "false") {
-    errorMessage = "Must select a value";
-  }
-  return errorMessage;
-};
-
-const handleAddressValidation = (web3, value) => {
-  const defValidation = handleDefaultValidation(value);
-  if (defValidation) {
-    return defValidation;
-  }
-
-  let errorMessage;
-  if (!web3.utils.isAddress(value)) {
-    errorMessage = "Enter a valid ETH address";
-  }
-  return errorMessage;
-};
-
-const handleBytesValidation = (size, web3, value) => {
-  const defValidation = handleDefaultValidation(value);
-  if (defValidation) {
-    return defValidation;
-  }
-
-  let errorMessage;
-  if (!web3.utils.isHexStrict(value)) {
-    errorMessage = "Enter a valid hex string";
-  } else if (value.length !== size * 2 + 2) {
-    errorMessage = `Byte array must be of size ${size}`;
-  }
-  return errorMessage;
-};
-
-const handleUintValidation = value => {
-  const defValidation = handleDefaultValidation(value);
-  if (defValidation) {
-    return defValidation;
-  }
-
-  let errorMessage;
-  if (!/^\s*[\d]+\s*$/.test(value)) {
-    errorMessage = "Not an unsigned numeric value";
-  }
-  return errorMessage;
-};
-
-const handleIntValidation = value => {
-  const defValidation = handleDefaultValidation(value);
-  if (defValidation) {
-    return defValidation;
-  }
-
-  let errorMessage;
-  if (!/^\s*[-+]?[\d]+\s*$/.test(value)) {
-    errorMessage = "Not a signed numeric value";
-  }
-  return errorMessage;
-};
-
-const handleDefaultValidation = value => {
-  let errorMessage;
-  if (!value || value.trim() === "") {
-    errorMessage = "Value is required";
-  }
-  return errorMessage;
-};
-
 const FunctionInput = ({ input, hideType }) => {
-  const web3 = useContext(Web3Context);
-
-  const handleValidation = value => {
-    if (input.type === "string") {
-      return handleStringValidation(value);
-    } else if (input.type === "bool") {
-      return handleBoolValidation(value);
-    } else if (input.type === "address") {
-      return handleAddressValidation(web3, value);
-    } else if (input.type.startsWith("bytes")) {
-      return handleBytesValidation(parseInt(input.type.substr(5)), web3, value);
-    } else if (input.type.startsWith("uint")) {
-      return handleUintValidation(value);
-    } else if (input.type.startsWith("int")) {
-      return handleIntValidation(value);
-    }
-    return handleDefaultValidation(value);
-  };
-
   if (input.type === "bool") {
     return (
       <Field
         name={input.name}
-        validate={handleValidation}
         render={props => <RegularRadioGroup input={input} {...props} />}
       />
     );
@@ -126,7 +28,6 @@ const FunctionInput = ({ input, hideType }) => {
   return (
     <Field
       name={input.name}
-      validate={handleValidation}
       render={props => (
         <RegularTextField input={input} hideType={hideType} {...props} />
       )}
