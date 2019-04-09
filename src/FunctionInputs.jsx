@@ -19,13 +19,13 @@ const FunctionInputs = ({
   touched
 }) => {
   const f = useContext(FunctionContext);
-  const { inputs } = f;
+  const { inputs, payable, constant } = f;
 
   return (
     <>
       {inputs.length > 0 && (
         <CardContent>
-          {f.payable && (
+          {payable && (
             <Field
               name="payableValue"
               render={({ field, form: { isSubmitting } }) => (
@@ -33,7 +33,7 @@ const FunctionInputs = ({
                   label="Pay ETH"
                   helperText={
                     errors["payableValue"] && touched["payableValue"]
-                      ? errors
+                      ? errors["payableValue"]
                       : "Enter a value in ETH to be paid to the function call"
                   }
                   error={errors["payableValue"] && touched["payableValue"]}
@@ -52,7 +52,7 @@ const FunctionInputs = ({
         </CardContent>
       )}
       <FunctionActions
-        f={f}
+        call={constant}
         transactionHash={transactionHash}
         disabled={isSubmitting}
       />
@@ -60,41 +60,33 @@ const FunctionInputs = ({
   );
 };
 
-const FunctionActions = React.memo(
-  ({ f: { constant }, transactionHash, disabled }) => {
-    const etherscan = useEtherscan();
+const FunctionActions = React.memo(({ call, transactionHash, disabled }) => {
+  const etherscan = useEtherscan();
 
-    return (
-      <CardActions>
-        <SpinningButton
-          variant="contained"
-          color="primary"
-          type="submit"
-          disabled={disabled}
-          fullWidth
+  return (
+    <CardActions>
+      <SpinningButton
+        variant="contained"
+        color="primary"
+        type="submit"
+        disabled={disabled}
+        fullWidth
+      >
+        {disabled ? <CircularProgress size={24} /> : call ? "Call" : "Send..."}
+      </SpinningButton>
+
+      {transactionHash && (
+        <Button
+          href={etherscan.getTxURL(transactionHash)}
+          target="_blank"
+          rel="noopener noreferrer"
         >
-          {disabled ? (
-            <CircularProgress size={24} />
-          ) : constant ? (
-            "Call"
-          ) : (
-            "Send..."
-          )}
-        </SpinningButton>
-
-        {transactionHash && (
-          <Button
-            href={etherscan.getTxURL(transactionHash)}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Open TX in Etherscan.io
-          </Button>
-        )}
-      </CardActions>
-    );
-  }
-);
+          Open TX in Etherscan.io
+        </Button>
+      )}
+    </CardActions>
+  );
+});
 
 const SpinningButton = styled(Button)`
   max-width: 5rem;
