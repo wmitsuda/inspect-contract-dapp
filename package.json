@@ -13,6 +13,7 @@
     "react": "^16.8.6",
     "react-copy-to-clipboard": "^5.0.1",
     "react-dom": "^16.8.6",
+    "react-ga": "^2.5.7",
     "react-qr-reader": "^2.2.1",
     "react-router-dom": "^5.0.0",
     "react-router-hash-link": "^1.2.1",
