@@ -35,12 +35,14 @@ const ContractDefinition = ({ address, abi, abiSetter }) => {
         <Grid item>
           <OverviewCard address={address} abiSetter={abiSetter} />
         </Grid>
-        <Grid item>
-          <AbiCard
-            abiSetter={abiSetter}
-            noAbi={!contract || abiFunctions.length === 0}
-          />
-        </Grid>
+        {address && (
+          <Grid item>
+            <AbiCard
+              abiSetter={abiSetter}
+              noAbi={!contract || abiFunctions.length === 0}
+            />
+          </Grid>
+        )}
         {contract &&
           abiFunctions.length > 0 &&
           abiFunctions.map(

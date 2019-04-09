@@ -40,8 +40,8 @@ const App = () => {
               />
               <Route
                 path="/"
-                render={() => (
-                  <Redirect to="0xD7758b318edd7aD12A2A0142C56c335be1607A79" />
+                render={props => (
+                  <ContractPage abi={abi} abiSetter={setAbi} {...props} />
                 )}
                 exact
               />

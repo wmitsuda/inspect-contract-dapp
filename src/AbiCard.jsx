@@ -26,7 +26,7 @@ const AbiCard = ({ abiSetter, noAbi }) => (
           <span role="img" aria-label="hint">
             💡
           </span>{" "}
-          Load some ABI first
+          Load some ABI
         </Typography>
         <Divider />
       </CardContent>
