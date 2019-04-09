@@ -37,22 +37,22 @@ const AbiCard = ({ abiSetter, noAbi }) => (
 
 const AbiCardActions = React.memo(({ abiSetter }) => (
   <CardActions>
-    <Button size="small" color="primary">
+    <Button size="small" color="primary" variant="outlined">
       Load ABI from JSON file...
     </Button>
     <UsePredefinedABI abiSetter={abiSetter} abi={erc20ABI}>
-      Use ERC20
+      ERC20
     </UsePredefinedABI>
     <UsePredefinedABI abiSetter={abiSetter} abi={erc165ABI}>
-      Use ERC165
+      ERC165
     </UsePredefinedABI>
     <UsePredefinedABI abiSetter={abiSetter} abi={erc721ABI}>
-      Use ERC721
+      ERC721
     </UsePredefinedABI>
 
     {process.env.NODE_ENV === "development" && (
       <UsePredefinedABI abiSetter={abiSetter} abi={demoABI}>
-        Use Demo ABI
+        Demo ABI
       </UsePredefinedABI>
     )}
   </CardActions>

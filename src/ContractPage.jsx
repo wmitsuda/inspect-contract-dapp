@@ -9,7 +9,9 @@ const ContractPage = ({ match, abi, abiSetter }) => {
   const drawerState = useDrawerState();
 
   useEffect(() => {
-    document.title = `Smart Contract Inspector | ${contractAddress}`;
+    document.title = `Smart Contract Inspector | ${
+      contractAddress ? contractAddress : "Home"
+    }`;
   }, [contractAddress]);
 
   return (
