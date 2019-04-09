@@ -148,8 +148,18 @@ const RegularRadioGroup = ({
         {input.type} {input.name}
       </FormLabel>
       <RadioGroup row {...field}>
-        <BooleanRadioControl value={true} isSubmitting={isSubmitting} />
-        <BooleanRadioControl value={false} isSubmitting={isSubmitting} />
+        <FormControlLabel
+          value="true"
+          control={<Radio />}
+          label="true"
+          disabled={isSubmitting}
+        />
+        <FormControlLabel
+          value="false"
+          control={<Radio />}
+          label="false"
+          disabled={isSubmitting}
+        />
       </RadioGroup>
       <FormHelperText>
         {myErrors && myTouched ? myErrors : `(${input.type})`}
@@ -157,15 +167,6 @@ const RegularRadioGroup = ({
     </FormControl>
   );
 };
-
-const BooleanRadioControl = ({ value, isSubmitting }) => (
-  <FormControlLabel
-    value={value.toString()}
-    control={<Radio />}
-    label={value.toString()}
-    disabled={isSubmitting}
-  />
-);
 
 const RegularTextField = ({
   input,
