@@ -7,7 +7,7 @@ import MenuIcon from "@material-ui/icons/Menu";
 import Typography from "@material-ui/core/Typography";
 import Tooltip from "@material-ui/core/Tooltip";
 import Ethereum from "mdi-material-ui/Ethereum";
-import Account from "mdi-material-ui/Account";
+import AccountArrowRight from "mdi-material-ui/AccountArrowRight";
 import { EthAddress } from "ethereum-react-components";
 import { useNetwork, useSelectedAccount } from "./Web3Context";
 import { useDrawer } from "./DrawerContext";
@@ -58,7 +58,7 @@ const SelectedAccount = ({ address }) => (
     <Tooltip title={address}>
       <Grid alignItems="center" wrap="nowrap" container>
         <Grid item>
-          <Account />
+          <AccountArrowRight />
         </Grid>
         <Grid item>
           <Typography variant="h6" color="inherit" noWrap>
