@@ -205,20 +205,6 @@ const FunctionCard = ({ f, contract, eventABI }) => {
   );
 };
 
-const functionReturns = f => {
-  if (f.outputs.length === 0) {
-    return "";
-  }
-
-  return (
-    f.outputs.reduce(
-      (str, o, idx) =>
-        str + (idx === 0 ? "" : ", ") + o.type + (o.name ? " " + o.name : ""),
-      " returns ("
-    ) + ")"
-  );
-};
-
 const FunctionTitle = withRouter(({ location: { pathname } }) => {
   const f = useContext(FunctionContext);
   return <FunctionHeader f={f} pathname={pathname} />;
@@ -226,8 +212,13 @@ const FunctionTitle = withRouter(({ location: { pathname } }) => {
 
 const FunctionHeader = React.memo(({ f, pathname }) => (
   <CardHeader
+    disableTypography={true}
     title={<FunctionHeaderTitle f={f} pathname={pathname} />}
-    subheader={`interfaceId (${f.signature})`}
+    subheader={
+      <Typography variant="caption" color="textSecondary">
+        interfaceId ({f.signature})
+      </Typography>
+    }
   />
 ));
 
@@ -245,19 +236,38 @@ const FunctionHeaderTitle = ({ f, pathname }) => (
       </Typography>
     </Grid>
     <Grid item>
-      <Typography variant="h6" color="textSecondary">
-        <small>
-          {" "}
-          public {f.constant ? " view" : ""}
-          {f.payable ? " payable" : ""}
-          {functionReturns(f)}
-        </small>
+      <Typography variant="h6" color="textSecondary" noWrap={true}>
+        <FunctionSuffix f={f} />
         &nbsp;
         <Link to={{ pathname: pathname, hash: f.name }}>#</Link>
       </Typography>
     </Grid>
   </Grid>
 );
+
+const FunctionSuffix = ({ f }) => (
+  <small>
+    {" "}
+    public {f.constant ? " view" : ""}
+    {f.payable ? " payable" : ""}
+    <FunctionReturns outputs={f.outputs} />
+  </small>
+);
+
+const FunctionReturns = ({ outputs }) => {
+  if (outputs.length === 0) {
+    return "";
+  }
+
+  return (
+    outputs
+      .map(o => o.type + (o.name ? ` ${o.name}` : ""))
+      .reduce(
+        (str, o, idx) => str + (idx === 0 ? "" : ", ") + o,
+        " returns ("
+      ) + ")"
+  );
+};
 
 const FunctionForm = ({
   transactionHash,
