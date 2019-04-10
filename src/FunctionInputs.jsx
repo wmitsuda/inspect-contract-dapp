@@ -4,6 +4,7 @@ import CardActions from "@material-ui/core/CardActions";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 import CircularProgress from "@material-ui/core/CircularProgress";
+import Divider from "@material-ui/core/Divider";
 import styled from "styled-components";
 import { Field } from "formik";
 import { FunctionContext } from "./FunctionContext";
@@ -23,34 +24,32 @@ const FunctionInputs = ({
 
   return (
     <>
-      {inputs.length > 0 && (
-        <CardContent>
-          {payable && (
-            <Field
-              name="payableValue"
-              render={({ field, form: { isSubmitting } }) => (
-                <TextField
-                  label="Pay ETH"
-                  helperText={
-                    errors["payableValue"] && touched["payableValue"]
-                      ? errors["payableValue"]
-                      : "Enter a value in ETH to be paid to the function call"
-                  }
-                  error={errors["payableValue"] && touched["payableValue"]}
-                  disabled={isSubmitting}
-                  margin="normal"
-                  required
-                  fullWidth
-                  {...field}
-                />
-              )}
-            />
-          )}
-          {inputs.map((input, key) => (
-            <FunctionInput key={key} input={input} />
-          ))}
-        </CardContent>
-      )}
+      <CardContent>
+        <Divider />
+        {payable && (
+          <Field
+            name="payableValue"
+            render={({ field, form: { isSubmitting } }) => (
+              <TextField
+                label="Pay ETH"
+                helperText={
+                  errors["payableValue"] && touched["payableValue"]
+                    ? errors["payableValue"]
+                    : "Enter a value in ETH to be paid to the function call"
+                }
+                error={errors["payableValue"] && touched["payableValue"]}
+                disabled={isSubmitting}
+                margin="normal"
+                required
+                fullWidth
+                {...field}
+              />
+            )}
+          />
+        )}
+        {inputs.length > 0 &&
+          inputs.map((input, key) => <FunctionInput key={key} input={input} />)}
+      </CardContent>
       <FunctionActions
         call={constant}
         transactionHash={transactionHash}

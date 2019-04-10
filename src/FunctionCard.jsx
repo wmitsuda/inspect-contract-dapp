@@ -8,9 +8,9 @@ import Typography from "@material-ui/core/Typography";
 import Divider from "@material-ui/core/Divider";
 import Button from "@material-ui/core/Button";
 import { Formik, Form } from "formik";
-import * as Yup from "yup";
 import { useSnackbar } from "notistack";
 import { Web3Context } from "./Web3Context";
+import { createValidationSchema } from "./ValidationSchema";
 import AnchorLink from "./AnchorLink";
 import { FunctionContext } from "./FunctionContext";
 import FunctionInputs from "./FunctionInputs";
@@ -27,69 +27,14 @@ const FunctionCard = ({ f, contract, eventABI }) => {
   const initialValues = useMemo(
     () =>
       f.inputs.reduce((o, input) => Object.assign(o, { [input.name]: "" }), {}),
-    [f]
+    [f.inputs]
   );
 
   const web3 = useContext(Web3Context);
-  const ValidationSchema = useMemo(() => {
-    const bytesSchema = size => {
-      return Yup.string()
-        .required("Value is required")
-        .test("isHex", "Enter a valid hex string", value =>
-          web3.utils.isHexStrict(value)
-        )
-        .test(
-          "isHexSize",
-          `Byte array must be of size ${size}`,
-          value => value && value.length === size * 2 + 2
-        );
-    };
-
-    const typesSchema = {
-      string: Yup.string().required("Value is required"),
-      bool: Yup.boolean().required("Must select a value"),
-      uint: Yup.string()
-        .required("Value is required")
-        .matches(/^\s*[\d]+\s*$/, "Not an unsigned numeric value"),
-      int: Yup.string()
-        .required("Value is required")
-        .matches(/^\s*[-+]?[\d]+\s*$/, "Not a signed numeric value"),
-      address: Yup.string()
-        .required("Value is required")
-        .test("isEthAddress", "Enter a valid ETH address", value =>
-          web3.utils.isAddress(value)
-        )
-    };
-
-    const normalizeType = input => {
-      const { name, type } = input;
-      let typeSchema;
-
-      if (type === "string" || type === "bool" || type === "address") {
-        typeSchema = typesSchema[type];
-      } else if (type.startsWith("uint")) {
-        typeSchema = typesSchema["uint"];
-      } else if (type.startsWith("int")) {
-        typeSchema = typesSchema["int"];
-      } else if (type.startsWith("bytes")) {
-        const size = parseInt(input.type.substr(5));
-        typeSchema = bytesSchema(size);
-      }
-
-      return {
-        name,
-        typeSchema
-      };
-    };
-
-    const shape = f.inputs
-      .map(normalizeType)
-      .reduce(
-        (o, input) => Object.assign(o, { [input.name]: input.typeSchema }),
-        {}
-      );
-    return Yup.object().shape(shape);
-  }, [f, web3]);
+  const ValidationSchema = useMemo(
+    () => createValidationSchema(f.inputs, web3),
+    [f.inputs, web3]
+  );
 
   const handleSubmit = async (values, { setSubmitting }) => {
     // Calculate parameters
@@ -184,7 +129,6 @@ const FunctionCard = ({ f, contract, eventABI }) => {
     <FunctionContext.Provider value={f}>
       <Card>
         <FunctionTitle />
-        <Divider />
         <Formik
           initialValues={initialValues}
           validateOnChange={false}
@@ -280,10 +224,10 @@ const FunctionForm = ({
 
   return (
     <>
-      <Form className="needs-validation" noValidate>
+      <Form noValidate>
         <FunctionInputs transactionHash={transactionHash} {...rest} />
       </Form>
-      <Divider />
+      {!isSubmitting && (returnValues || returnedEvents) && <Divider />}
       <div ref={resultRef} />
       {!isSubmitting && returnValues && (
         <FunctionOutputs
