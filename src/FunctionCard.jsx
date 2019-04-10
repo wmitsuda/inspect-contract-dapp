@@ -178,7 +178,7 @@ const FunctionForm = ({
           returnValues={returnValues}
         />
       )}
-      {!isSubmitting && returnedEvents && (
+      {!isSubmitting && returnedEvents && returnedEvents.length > 0 && (
         <FunctionEvents events={returnedEvents} />
       )}
     </>
