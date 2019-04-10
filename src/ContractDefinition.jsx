@@ -4,9 +4,7 @@ import styled from "styled-components";
 import { useWeb3, useSelectedAccount } from "./Web3Context";
 import OverviewCard from "./OverviewCard";
 import AbiCard from "./AbiCard";
-import FunctionDefinition from "./FunctionDefinition";
-import Card from "@material-ui/core/Card";
-import Typography from "@material-ui/core/Typography";
+import FunctionCard from "./FunctionCard";
 import ContractDrawer from "./ContractDrawer";
 
 const ContractDefinition = ({ address, abi, abiSetter }) => {
@@ -58,7 +56,7 @@ const ContractDefinition = ({ address, abi, abiSetter }) => {
                 (f, key) =>
                   f.signature && (
                     <Grid key={f.signature} item>
-                      <FunctionDefinition
+                      <FunctionCard
                         f={f}
                         contract={contract}
                         eventABI={abiEvents}

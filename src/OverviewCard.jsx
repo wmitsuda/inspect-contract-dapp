@@ -25,18 +25,7 @@ const OverviewCard = ({ address, abiSetter, history }) => {
   return (
     <Card>
       <AnchorLink id="_contract" />
-      {address ? (
-        <OverviewCardHeader address={address} isEditing={isEditing} />
-      ) : (
-        <CardContent>
-          <Typography align="center" variant="h5" color="textPrimary">
-            <span role="img" aria-label="hint">
-              💡
-            </span>{" "}
-            Load some contract
-          </Typography>
-        </CardContent>
-      )}
+      <OverviewCardHeader address={address} isEditing={isEditing} />
       <Divider />
       {isEditing ? (
         <Formik
@@ -44,13 +33,23 @@ const OverviewCard = ({ address, abiSetter, history }) => {
           validateOnChange={false}
           onSubmit={handleSubmit}
           render={({ setFieldValue, setFieldTouched }) => {
-            const setValue = value => {
-              setFieldValue("contractAddress", value, false);
-              setFieldTouched("contractAddress");
+            const AddressButton = ({ address, children, ...rest }) => (
+              <Button
+                variant="outlined"
+                onClick={() => setValue("contractAddress", address)}
+                {...rest}
+              >
+                {children}
+              </Button>
+            );
+
+            const setValue = (name, value) => {
+              setFieldValue(name, value, false);
+              setFieldTouched(name);
             };
 
             return (
-              <Form className="needs-validation" noValidate>
+              <Form noValidate>
                 <CardContent>
                   <FunctionInput
                     input={{ type: "address", name: "contractAddress" }}
@@ -64,22 +63,12 @@ const OverviewCard = ({ address, abiSetter, history }) => {
                   <Button type="submit" variant="contained" color="primary">
                     OK
                   </Button>
-                  <Button
-                    variant="outlined"
-                    onClick={() =>
-                      setValue("0xD7758b318edd7aD12A2A0142C56c335be1607A79")
-                    }
-                  >
+                  <AddressButton address="0xD7758b318edd7aD12A2A0142C56c335be1607A79">
                     ERC20 Test (ropsten)
-                  </Button>
-                  <Button
-                    variant="outlined"
-                    onClick={() =>
-                      setValue("0xbae733b606788f169199D24c69bdC95a2dd9a500")
-                    }
-                  >
+                  </AddressButton>
+                  <AddressButton address="0xbae733b606788f169199D24c69bdC95a2dd9a500">
                     Demo (ropsten)
-                  </Button>
+                  </AddressButton>
                 </CardActions>
               </Form>
             );
@@ -100,16 +89,31 @@ const OverviewCard = ({ address, abiSetter, history }) => {
   );
 };
 
-const OverviewCardHeader = ({ address, isEditing }) => (
-  <CardHeader
-    avatar={<Identicon address={address} size="small" />}
-    title={address}
-    titleTypographyProps={{
-      variant: "h6",
-      noWrap: true,
-      color: isEditing ? "textSecondary" : "textPrimary"
-    }}
-  />
-);
+const OverviewCardHeader = ({ address, isEditing }) => {
+  if (!address) {
+    return (
+      <CardContent>
+        <Typography align="center" variant="h5" color="textPrimary">
+          <span role="img" aria-label="hint">
+            💡
+          </span>{" "}
+          Load some contract
+        </Typography>
+      </CardContent>
+    );
+  }
+
+  return (
+    <CardHeader
+      avatar={<Identicon address={address} size="small" />}
+      title={address}
+      titleTypographyProps={{
+        variant: "h6",
+        noWrap: true,
+        color: isEditing ? "textSecondary" : "textPrimary"
+      }}
+    />
+  );
+};
 
 export default withRouter(OverviewCard);

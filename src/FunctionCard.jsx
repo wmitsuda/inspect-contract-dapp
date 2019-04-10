@@ -17,7 +17,7 @@ import FunctionInputs from "./FunctionInputs";
 import FunctionOutputs from "./FunctionOutputs";
 import FunctionEvents from "./FunctionEvents";
 
-const FunctionDefinition = ({ f, contract, eventABI }) => {
+const FunctionCard = ({ f, contract, eventABI }) => {
   const [transactionHash, setTransactionHash] = useState();
   const [returnValues, setReturnValues] = useState();
   const [returnedEvents, setReturnedEvents] = useState();
@@ -288,4 +288,4 @@ const FunctionForm = ({
   );
 };
 
-export default FunctionDefinition;
+export default FunctionCard;
