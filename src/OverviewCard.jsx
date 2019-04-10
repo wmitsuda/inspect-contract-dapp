@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { withRouter } from "react-router-dom";
-import Grid from "@material-ui/core/Grid";
 import Card from "@material-ui/core/Card";
 import CardHeader from "@material-ui/core/CardHeader";
 import CardContent from "@material-ui/core/CardContent";
@@ -104,21 +103,13 @@ const OverviewCard = ({ address, abiSetter, history }) => {
 const OverviewCardHeader = ({ address, isEditing }) => (
   <CardHeader
     avatar={<Identicon address={address} size="small" />}
-    title={<OverviewCardTitle address={address} isEditing={isEditing} />}
+    title={address}
+    titleTypographyProps={{
+      variant: "h6",
+      noWrap: true,
+      color: isEditing ? "textSecondary" : "textPrimary"
+    }}
   />
-);
-
-const OverviewCardTitle = ({ address, isEditing }) => (
-  <Grid container alignItems="center" spacing={8}>
-    <Grid item>
-      <Typography
-        variant="h6"
-        color={isEditing ? "textSecondary" : "textPrimary"}
-      >
-        {address}
-      </Typography>
-    </Grid>
-  </Grid>
 );
 
 export default withRouter(OverviewCard);

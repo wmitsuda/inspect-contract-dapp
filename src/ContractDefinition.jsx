@@ -5,6 +5,8 @@ import { useWeb3, useSelectedAccount } from "./Web3Context";
 import OverviewCard from "./OverviewCard";
 import AbiCard from "./AbiCard";
 import FunctionDefinition from "./FunctionDefinition";
+import Card from "@material-ui/core/Card";
+import Typography from "@material-ui/core/Typography";
 import ContractDrawer from "./ContractDrawer";
 
 const ContractDefinition = ({ address, abi, abiSetter }) => {
@@ -31,32 +33,41 @@ const ContractDefinition = ({ address, abi, abiSetter }) => {
 
   return (
     <ContractSection>
-      <Grid direction="column" spacing={16} container>
+      <Grid justify="center" container>
         <Grid item>
-          <OverviewCard address={address} abiSetter={abiSetter} />
-        </Grid>
-        {address && (
-          <Grid item>
-            <AbiCard
-              abiSetter={abiSetter}
-              noAbi={!contract || abiFunctions.length === 0}
-            />
+          <Grid
+            direction="column"
+            spacing={16}
+            component={ContractDiv}
+            container
+          >
+            <Grid item>
+              <OverviewCard address={address} abiSetter={abiSetter} />
+            </Grid>
+            {address && (
+              <Grid item>
+                <AbiCard
+                  abiSetter={abiSetter}
+                  noAbi={!contract || abiFunctions.length === 0}
+                />
+              </Grid>
+            )}
+            {contract &&
+              abiFunctions.length > 0 &&
+              abiFunctions.map(
+                (f, key) =>
+                  f.signature && (
+                    <Grid key={f.signature} item>
+                      <FunctionDefinition
+                        f={f}
+                        contract={contract}
+                        eventABI={abiEvents}
+                      />
+                    </Grid>
+                  )
+              )}
           </Grid>
-        )}
-        {contract &&
-          abiFunctions.length > 0 &&
-          abiFunctions.map(
-            (f, key) =>
-              f.signature && (
-                <Grid key={f.signature} item>
-                  <FunctionDefinition
-                    f={f}
-                    contract={contract}
-                    eventABI={abiEvents}
-                  />
-                </Grid>
-              )
-          )}
+        </Grid>
       </Grid>
       <ContractDrawer address={address} abiFunctions={abiFunctions} />
     </ContractSection>
@@ -66,6 +77,10 @@ const ContractDefinition = ({ address, abi, abiSetter }) => {
 const ContractSection = styled.section`
   background-color: #eeeeee;
   padding: 2rem;
+`;
+
+const ContractDiv = styled.div`
+  min-width: 780px;
 `;
 
 export default ContractDefinition;
