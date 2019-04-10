@@ -13,6 +13,7 @@ import QrcodeScan from "mdi-material-ui/QrcodeScan";
 import WindowClose from "mdi-material-ui/WindowClose";
 import AccountArrowLeftOutline from "mdi-material-ui/AccountArrowLeftOutline";
 import CurrencyEth from "mdi-material-ui/CurrencyEth";
+import { Identicon } from "ethereum-react-components";
 import { Field } from "formik";
 import { Web3Context, useQRReader } from "./Web3Context";
 
@@ -94,6 +95,11 @@ const RegularTextField = ({
   let inputProps = {};
   if (type === "address") {
     inputProps = {
+      startAdornment: (
+        <InputAdornment position="start">
+          <Identicon address={field.value} size="tiny" />
+        </InputAdornment>
+      ),
       endAdornment: (
         <AddressInputAdornment
           isScanning={isScanning}
