@@ -5,8 +5,10 @@ import Grid from "@material-ui/core/Grid";
 import IconButton from "@material-ui/core/IconButton";
 import MenuIcon from "@material-ui/icons/Menu";
 import Typography from "@material-ui/core/Typography";
+import Tooltip from "@material-ui/core/Tooltip";
 import Ethereum from "mdi-material-ui/Ethereum";
 import Account from "mdi-material-ui/Account";
+import { EthAddress } from "ethereum-react-components";
 import { useNetwork, useSelectedAccount } from "./Web3Context";
 import { useDrawer } from "./DrawerContext";
 
@@ -21,7 +23,7 @@ const GlobalAppBar = () => {
         <Grid spacing={16} alignItems="center" container>
           <DrawerMenu action={openDrawer} />
           <EthereumNetwork networkName={networkName} />
-          <SelectedAccount address={selectedAccount} />
+          {selectedAccount && <SelectedAccount address={selectedAccount} />}
         </Grid>
       </Toolbar>
     </AppBar>
@@ -53,16 +55,18 @@ const EthereumNetwork = ({ networkName }) => (
 
 const SelectedAccount = ({ address }) => (
   <Grid item>
-    <Grid alignItems="center" wrap="nowrap" container>
-      <Grid item>
-        <Account />
+    <Tooltip title={address}>
+      <Grid alignItems="center" wrap="nowrap" container>
+        <Grid item>
+          <Account />
+        </Grid>
+        <Grid item>
+          <Typography variant="h6" color="inherit" noWrap>
+            <EthAddress address={address} short />
+          </Typography>
+        </Grid>
       </Grid>
-      <Grid item>
-        <Typography variant="h6" color="inherit" noWrap>
-          {address}
-        </Typography>
-      </Grid>
-    </Grid>
+    </Tooltip>
   </Grid>
 );
 

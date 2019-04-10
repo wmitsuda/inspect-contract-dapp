@@ -6,8 +6,10 @@ import CardContent from "@material-ui/core/CardContent";
 import CardActions from "@material-ui/core/CardActions";
 import Divider from "@material-ui/core/Divider";
 import Button from "@material-ui/core/Button";
+import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
-import { Identicon } from "ethereum-react-components";
+import Tooltip from "@material-ui/core/Tooltip";
+import { Identicon, EthAddress } from "ethereum-react-components";
 import { Formik, Form } from "formik";
 import AnchorLink from "./AnchorLink";
 import { useWeb3 } from "./Web3Context";
@@ -115,12 +117,22 @@ const OverviewCardHeader = ({ address, isEditing }) => {
   return (
     <CardHeader
       avatar={<Identicon address={address} size="small" />}
-      title={address}
-      titleTypographyProps={{
-        variant: "h6",
-        noWrap: true,
-        color: isEditing ? "textSecondary" : "textPrimary"
-      }}
+      disableTypography={true}
+      title={
+        <Grid container>
+          <Grid item>
+            <Tooltip title={address}>
+              <Typography
+                variant="h6"
+                noWrap={true}
+                color={isEditing ? "textSecondary" : "textPrimary"}
+              >
+                <EthAddress address={address} short />
+              </Typography>
+            </Tooltip>
+          </Grid>
+        </Grid>
+      }
     />
   );
 };

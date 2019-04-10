@@ -78,7 +78,7 @@ const ContractSection = styled.section`
 `;
 
 const ContractDiv = styled.div`
-  min-width: 780px;
+  min-width: 600px;
 `;
 
 export default ContractDefinition;

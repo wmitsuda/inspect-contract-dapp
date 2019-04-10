@@ -7,7 +7,7 @@ import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
 import Divider from "@material-ui/core/Divider";
 import Home from "@material-ui/icons/Home";
-import { Identicon } from "ethereum-react-components";
+import { Identicon, EthAddress } from "ethereum-react-components";
 import AlphaCcircleOutline from "mdi-material-ui/AlphaCcircleOutline";
 import AlphaScircleOutline from "mdi-material-ui/AlphaScircleOutline";
 import { useDrawer } from "./DrawerContext";
@@ -44,7 +44,7 @@ const OverviewSection = ({ address, closeDrawer }) => (
         <ListItemIcon>
           <Identicon address={address} size="tiny" />
         </ListItemIcon>
-        <ListItemText primary={address} />
+        <ListItemText primary={<EthAddress address={address} short />} />
       </ListItem>
     )}
     <Divider />
