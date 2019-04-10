@@ -29,11 +29,14 @@ const FunctionCard = ({ f, contract, eventABI }) => {
       f.inputs.reduce((o, input) => Object.assign(o, { [input.name]: "" }), {}),
     [f.inputs]
   );
+  if (f.payable) {
+    initialValues["payableValue"] = "";
+  }
 
   const web3 = useContext(Web3Context);
   const ValidationSchema = useMemo(
-    () => createValidationSchema(f.inputs, web3),
-    [f.inputs, web3]
+    () => createValidationSchema(f.inputs, f.payable, web3),
+    [f.inputs, f.payable, web3]
   );
 
   const handleSubmit = async (values, { setSubmitting }) => {

@@ -12,6 +12,7 @@ import IconButton from "@material-ui/core/IconButton";
 import QrcodeScan from "mdi-material-ui/QrcodeScan";
 import WindowClose from "mdi-material-ui/WindowClose";
 import AccountArrowLeftOutline from "mdi-material-ui/AccountArrowLeftOutline";
+import CurrencyEth from "mdi-material-ui/CurrencyEth";
 import { Field } from "formik";
 import { Web3Context, useQRReader } from "./Web3Context";
 
@@ -90,6 +91,28 @@ const RegularTextField = ({
   const myErrors = errors[name];
   const myTouched = touched[name];
 
+  let inputProps = {};
+  if (type === "address") {
+    inputProps = {
+      endAdornment: (
+        <AddressInputAdornment
+          isScanning={isScanning}
+          toggleScanning={toggleScanning}
+          onSetMyAddress={setMyAddress}
+          disabled={isSubmitting}
+        />
+      )
+    };
+  } else if (type === "eth") {
+    inputProps = {
+      startAdornment: (
+        <InputAdornment position="start">
+          <CurrencyEth />
+        </InputAdornment>
+      )
+    };
+  }
+
   return (
     <>
       <TextField
@@ -101,20 +124,7 @@ const RegularTextField = ({
         margin="normal"
         required
         fullWidth
-        InputProps={
-          type === "address"
-            ? {
-                endAdornment: (
-                  <AddressInputAdornment
-                    isScanning={isScanning}
-                    toggleScanning={toggleScanning}
-                    onSetMyAddress={setMyAddress}
-                    disabled={isSubmitting}
-                  />
-                )
-              }
-            : {}
-        }
+        InputProps={inputProps}
       />
       <QRReader />
     </>

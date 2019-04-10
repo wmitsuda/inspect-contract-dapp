@@ -1,6 +1,6 @@
 import * as Yup from "yup";
 
-const createValidationSchema = (inputs, web3) => {
+const createValidationSchema = (inputs, payable, web3) => {
   const bytesSchema = size => {
     return Yup.string()
       .required("Value is required")
@@ -27,7 +27,10 @@ const createValidationSchema = (inputs, web3) => {
       .required("Value is required")
       .test("isEthAddress", "Enter a valid ETH address", value =>
         web3.utils.isAddress(value)
-      )
+      ),
+    eth: Yup.string()
+      .required("Value is required")
+      .matches(/^\d+(?:\.\d{1,18})?$/, "Not an ETH value")
   };
 
   const normalizeType = input => {
@@ -57,6 +60,9 @@ const createValidationSchema = (inputs, web3) => {
       (o, input) => Object.assign(o, { [input.name]: input.typeSchema }),
       {}
     );
+  if (payable) {
+    shape["payableValue"] = typesSchema.eth;
+  }
   return Yup.object().shape(shape);
 };
 
