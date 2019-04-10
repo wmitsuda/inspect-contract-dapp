@@ -9,7 +9,7 @@ import Divider from "@material-ui/core/Divider";
 import Button from "@material-ui/core/Button";
 import { Formik, Form } from "formik";
 import { useSnackbar } from "notistack";
-import { Web3Context } from "./Web3Context";
+import { useWeb3 } from "./Web3Context";
 import { createValidationSchema } from "./ValidationSchema";
 import AnchorLink from "./AnchorLink";
 import { FunctionContext } from "./FunctionContext";
@@ -33,7 +33,7 @@ const FunctionCard = ({ f, contract, eventABI }) => {
     initialValues["payableValue"] = "";
   }
 
-  const web3 = useContext(Web3Context);
+  const web3 = useWeb3();
   const ValidationSchema = useMemo(
     () => createValidationSchema(f.inputs, f.payable, web3),
     [f.inputs, f.payable, web3]

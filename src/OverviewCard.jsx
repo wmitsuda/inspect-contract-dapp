@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import { withRouter } from "react-router-dom";
 import Card from "@material-ui/core/Card";
 import CardHeader from "@material-ui/core/CardHeader";
@@ -10,11 +10,19 @@ import Typography from "@material-ui/core/Typography";
 import { Identicon } from "ethereum-react-components";
 import { Formik, Form } from "formik";
 import AnchorLink from "./AnchorLink";
+import { useWeb3 } from "./Web3Context";
+import { createValidationSchema } from "./ValidationSchema";
 import FunctionInput from "./FunctionInput";
 
 const OverviewCard = ({ address, abiSetter, history }) => {
   const [isEditing, setEditing] = useState(false);
   const initialValues = { contractAddress: address ? address : "" };
+
+  const web3 = useWeb3();
+  const ValidationSchema = useMemo(() => {
+    const inputs = [{ name: "contractAddress", type: "address" }];
+    return createValidationSchema(inputs, false, web3);
+  }, [web3]);
 
   const handleSubmit = (values, actions) => {
     history.push(values.contractAddress);
@@ -31,6 +39,7 @@ const OverviewCard = ({ address, abiSetter, history }) => {
         <Formik
           initialValues={initialValues}
           validateOnChange={false}
+          validationSchema={ValidationSchema}
           onSubmit={handleSubmit}
           render={({ setFieldValue, setFieldTouched }) => {
             const AddressButton = ({ address, children, ...rest }) => (
