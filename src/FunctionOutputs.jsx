@@ -15,7 +15,7 @@ const FunctionOutputs = ({ processing, returnValues }) => {
   return (
     <CardContent>
       <Typography variant="h6">Outputs:</Typography>
-      <Table padding="dense">
+      <Table padding="none">
         <TableHead>
           <TableRow>
             <TableCell>Return</TableCell>

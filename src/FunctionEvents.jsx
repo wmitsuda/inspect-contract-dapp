@@ -27,7 +27,7 @@ const FunctionEvent = ({ event, attrs }) => (
       <Typography variant="subtitle1">{event}</Typography>
     </ExpansionPanelSummary>
     <ExpansionPanelDetails>
-      <Table padding="dense">
+      <Table padding="none">
         <TableHead>
           <TableRow>
             <TableCell>Attribute</TableCell>
