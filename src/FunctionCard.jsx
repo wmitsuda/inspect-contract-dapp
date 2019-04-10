@@ -64,9 +64,18 @@ const FunctionCard = ({ f, contract, eventABI }) => {
     } else {
       // Send
       try {
-        const outputs = await method.send().on("transactionHash", value => {
-          setTransactionHash(value);
-        });
+        let options;
+        if (f.payable) {
+          options = {
+            value: web3.utils.toWei(values["payableValue"])
+          };
+        }
+
+        const outputs = await method
+          .send(options)
+          .on("transactionHash", value => {
+            setTransactionHash(value);
+          });
         if (f.outputs.length === 1) {
           setReturnValues([outputs]);
         } else if (f.outputs.length > 1) {
