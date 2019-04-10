@@ -52,7 +52,6 @@ const FunctionActions = React.memo(({ call, transactionHash, disabled }) => {
 
       {transactionHash && (
         <Button
-          color="textSecondary"
           href={etherscan.getTxURL(transactionHash)}
           target="_blank"
           rel="noopener noreferrer"
