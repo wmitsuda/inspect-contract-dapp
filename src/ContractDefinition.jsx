@@ -2,12 +2,14 @@ import React, { useState, useEffect, useMemo } from "react";
 import Grid from "@material-ui/core/Grid";
 import styled from "styled-components";
 import { useWeb3, useSelectedAccount } from "./Web3Context";
+import { useContract } from "./ContractContext";
 import OverviewCard from "./OverviewCard";
 import AbiCard from "./AbiCard";
 import FunctionCard from "./FunctionCard";
 import ContractDrawer from "./ContractDrawer";
 
-const ContractDefinition = ({ address, abi, abiSetter }) => {
+const ContractDefinition = ({ address }) => {
+  const { abi } = useContract();
   const [contract, setContract] = useState();
   const abiFunctions = useMemo(() => abi.filter(f => f.type === "function"), [
     abi
@@ -40,14 +42,11 @@ const ContractDefinition = ({ address, abi, abiSetter }) => {
             container
           >
             <Grid item>
-              <OverviewCard address={address} abiSetter={abiSetter} />
+              <OverviewCard address={address} />
             </Grid>
             {address && (
               <Grid item>
-                <AbiCard
-                  abiSetter={abiSetter}
-                  noAbi={!contract || abiFunctions.length === 0}
-                />
+                <AbiCard noAbi={!contract || abiFunctions.length === 0} />
               </Grid>
             )}
             {contract &&

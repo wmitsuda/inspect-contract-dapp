@@ -4,7 +4,7 @@ import { DrawerContext, useDrawerState } from "./DrawerContext";
 import GlobalAppBar from "./GlobalAppBar";
 import ContractDefinition from "./ContractDefinition";
 
-const ContractPage = ({ match, abi, abiSetter }) => {
+const ContractPage = ({ match }) => {
   const { contractAddress } = match.params;
   const drawerState = useDrawerState();
 
@@ -19,11 +19,7 @@ const ContractPage = ({ match, abi, abiSetter }) => {
       <CssBaseline />
       <DrawerContext.Provider value={drawerState}>
         <GlobalAppBar />
-        <ContractDefinition
-          address={contractAddress}
-          abi={abi}
-          abiSetter={abiSetter}
-        />
+        <ContractDefinition address={contractAddress} />
       </DrawerContext.Provider>
     </main>
   );

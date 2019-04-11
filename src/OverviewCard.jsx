@@ -16,7 +16,7 @@ import { useWeb3 } from "./Web3Context";
 import { createValidationSchema } from "./ValidationSchema";
 import FunctionInput from "./FunctionInput";
 
-const OverviewCard = ({ address, abiSetter, history }) => {
+const OverviewCard = ({ address, history }) => {
   const [isEditing, setEditing] = useState(false);
   const initialValues = { contractAddress: address ? address : "" };
 
