@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 import Card from "@material-ui/core/Card";
 import CardHeader from "@material-ui/core/CardHeader";
 import CardContent from "@material-ui/core/CardContent";
@@ -35,28 +35,58 @@ const AbiCard = ({ abiSetter, noAbi }) => (
   </Card>
 );
 
-const AbiCardActions = React.memo(({ abiSetter }) => (
-  <CardActions>
-    <Button size="small" color="primary" variant="outlined">
-      Load ABI from JSON file...
-    </Button>
-    <UsePredefinedABI abiSetter={abiSetter} abi={erc20ABI}>
-      ERC20
-    </UsePredefinedABI>
-    <UsePredefinedABI abiSetter={abiSetter} abi={erc165ABI}>
-      ERC165
-    </UsePredefinedABI>
-    <UsePredefinedABI abiSetter={abiSetter} abi={erc721ABI}>
-      ERC721
-    </UsePredefinedABI>
+const AbiCardActions = React.memo(({ abiSetter }) => {
+  const fileRef = useRef();
 
-    {process.env.NODE_ENV === "development" && (
-      <UsePredefinedABI abiSetter={abiSetter} abi={demoABI}>
-        Demo ABI
+  const handleFileChange = e => {
+    const reader = new FileReader();
+    reader.onload = e => {
+      const json = JSON.parse(e.target.result);
+      const { abi } = json;
+      abiSetter(abi);
+    };
+    reader.readAsText(fileRef.current.files[0]);
+  };
+
+  return (
+    <CardActions>
+      <input
+        id="load-abi-from-file"
+        type="file"
+        accept="application/json"
+        style={{ display: "none" }}
+        onChange={handleFileChange}
+        onClick={e => (e.target.value = null)}
+        ref={fileRef}
+      />
+      <label htmlFor="load-abi-from-file">
+        <Button
+          component="span"
+          size="small"
+          color="primary"
+          variant="outlined"
+        >
+          Load ABI from JSON file...
+        </Button>
+      </label>
+      <UsePredefinedABI abiSetter={abiSetter} abi={erc20ABI}>
+        ERC20
       </UsePredefinedABI>
-    )}
-  </CardActions>
-));
+      <UsePredefinedABI abiSetter={abiSetter} abi={erc165ABI}>
+        ERC165
+      </UsePredefinedABI>
+      <UsePredefinedABI abiSetter={abiSetter} abi={erc721ABI}>
+        ERC721
+      </UsePredefinedABI>
+
+      {process.env.NODE_ENV === "development" && (
+        <UsePredefinedABI abiSetter={abiSetter} abi={demoABI}>
+          Demo ABI
+        </UsePredefinedABI>
+      )}
+    </CardActions>
+  );
+});
 
 const UsePredefinedABI = ({ abiSetter, abi, children }) => (
   <Button size="small" color="secondary" onClick={() => abiSetter(abi)}>
