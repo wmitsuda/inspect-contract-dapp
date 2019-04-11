@@ -42,6 +42,8 @@ const FunctionCard = ({ f, contract, eventABI }) => {
     }
 
     const method = contract.methods[f.name](...args);
+    setReturnValues(undefined);
+    setReturnedEvents(undefined);
     if (f.constant) {
       // Call
       try {
