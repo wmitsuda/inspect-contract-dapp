@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useRef } from "react";
 import Card from "@material-ui/core/Card";
 import CardHeader from "@material-ui/core/CardHeader";
 import CardContent from "@material-ui/core/CardContent";
@@ -9,12 +9,6 @@ import Typography from "@material-ui/core/Typography";
 import Tooltip from "@material-ui/core/Tooltip";
 import Button from "@material-ui/core/Button";
 import IconButton from "@material-ui/core/IconButton";
-import Dialog from "@material-ui/core/Dialog";
-import DialogTitle from "@material-ui/core/DialogTitle";
-import DialogContent from "@material-ui/core/DialogContent";
-import DialogContentText from "@material-ui/core/DialogContentText";
-import DialogActions from "@material-ui/core/DialogActions";
-import TextField from "@material-ui/core/TextField";
 import LinearProgress from "@material-ui/core/LinearProgress";
 import FormatListNumberedIcon from "@material-ui/icons/FormatListNumbered";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
@@ -22,7 +16,8 @@ import ExpandLessIcon from "@material-ui/icons/ExpandLess";
 import { useSnackbar } from "notistack";
 import { useContract } from "./ContractContext";
 import { ProcessingContext, useProcessing } from "./ProcessingContext";
-import ipfsClient from "ipfs-http-client";
+import useIpfs from "./useIpfs";
+import { useDialog } from "./AskCidDialog";
 import erc20ABI from "./abi/ERC20.json";
 import erc165ABI from "./abi/ERC165.json";
 import erc721ABI from "./abi/ERC721.json";
@@ -98,28 +93,19 @@ const AbiCardActions = React.memo(() => {
     setWorking(false);
   };
 
-  const [ipfs, setIpfs] = useState();
-  useEffect(() => {
-    const enableIpfs = async () => {
-      const client = ipfsClient("ipfs.infura.io", "5001", {
-        protocol: "https"
-      });
-      setIpfs(client);
-    };
-    enableIpfs();
-  }, []);
+  const { ipfs } = useIpfs();
 
-  const [loadOpen, setLoadOpen] = useState(false);
-  const [cid, setCid] = useState("");
-  const loadFromIpfs = async () => {
+  const loadFromIpfs = async cid => {
+    setWorking(true);
     enqueueSnackbar(`Loading CID ${cid} from IPFS...`);
     const result = await ipfs.cat(cid);
 
     const newAbi = JSON.parse(result);
     setAbi(newAbi);
     enqueueSnackbar("ABI loaded from IPFS!");
-    setLoadOpen(false);
+    setWorking(false);
   };
+  const { AskCidDialog, open } = useDialog(loadFromIpfs);
 
   const [working, setWorking] = useState(false);
   const saveToIpfs = async () => {
@@ -187,38 +173,10 @@ const AbiCardActions = React.memo(() => {
             </UsePredefinedABI>
           )}
 
-          <Button
-            size="small"
-            onClick={() => setLoadOpen(true)}
-            disabled={working}
-          >
+          <Button size="small" onClick={open} disabled={working}>
             Load from IPFS
           </Button>
-          <Dialog open={loadOpen} onClose={() => setLoadOpen(false)}>
-            <DialogTitle>Load ABI</DialogTitle>
-            <DialogContent>
-              <DialogContentText>
-                Enter the IPFS CID of the json ABI you want to load.
-              </DialogContentText>
-              <TextField
-                id="cid"
-                label="CID"
-                margin="dense"
-                value={cid}
-                onChange={e => setCid(e.target.value)}
-                autoFocus
-                fullWidth
-              />
-            </DialogContent>
-            <DialogActions>
-              <Button color="primary" onClick={() => setLoadOpen(false)}>
-                Cancel
-              </Button>
-              <Button color="primary" onClick={loadFromIpfs}>
-                Load
-              </Button>
-            </DialogActions>
-          </Dialog>
+          <AskCidDialog />
 
           <Tooltip title="Save ABI JSON to IPFS">
             <div>
