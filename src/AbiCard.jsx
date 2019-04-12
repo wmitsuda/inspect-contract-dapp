@@ -15,9 +15,12 @@ import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import ExpandLessIcon from "@material-ui/icons/ExpandLess";
 import { useSnackbar } from "notistack";
 import { useContract } from "./ContractContext";
-import { ProcessingContext, useProcessing } from "./ProcessingContext";
-import useIpfs from "./useIpfs";
-import { useDialog } from "./AskCidDialog";
+import {
+  ProcessingContext,
+  useNewProcessingContext
+} from "./ProcessingContext";
+import UsePredefinedABI from "./UsePredefinedABI";
+import { LoadFromIpfsButton, SaveToIpfsButton } from "./IpfsActions";
 import erc20ABI from "./abi/ERC20.json";
 import erc165ABI from "./abi/ERC165.json";
 import erc721ABI from "./abi/ERC721.json";
@@ -67,19 +70,15 @@ const AbiLoadedCard = () => {
 };
 
 const AbiCardActions = React.memo(() => {
+  const processingContext = useNewProcessingContext();
+  const { processing, setProcessing } = processingContext;
   const { enqueueSnackbar } = useSnackbar();
 
-  const { abi, setAbi } = useContract();
-  const abiSetter = (newAbi, name) => () => {
-    setWorking(true);
-    setAbi(newAbi);
-    enqueueSnackbar(`${name} ABI loaded`);
-    setWorking(false);
-  };
+  const { setAbi } = useContract();
 
   const fileRef = useRef();
   const handleFileChange = e => {
-    setWorking(true);
+    setProcessing(true);
 
     const reader = new FileReader();
     reader.onload = e => {
@@ -90,38 +89,11 @@ const AbiCardActions = React.memo(() => {
     reader.readAsText(fileRef.current.files[0]);
 
     enqueueSnackbar("ABI loaded from file");
-    setWorking(false);
-  };
-
-  const { ipfs } = useIpfs();
-
-  const loadFromIpfs = async cid => {
-    setWorking(true);
-    enqueueSnackbar(`Loading CID ${cid} from IPFS...`);
-    const result = await ipfs.cat(cid);
-
-    const newAbi = JSON.parse(result);
-    setAbi(newAbi);
-    enqueueSnackbar("ABI loaded from IPFS!");
-    setWorking(false);
-  };
-  const { AskCidDialog, open } = useDialog(loadFromIpfs);
-
-  const [working, setWorking] = useState(false);
-  const saveToIpfs = async () => {
-    setWorking(true);
-
-    const abiString = JSON.stringify(abi);
-    const content = Buffer.from(abiString);
-
-    const result = await ipfs.add(content);
-    const { hash } = result[0];
-    enqueueSnackbar(`ABI stored in IPFS with CID: ${hash}`);
-    setWorking(false);
+    setProcessing(false);
   };
 
   return (
-    <ProcessingContext.Provider value={working}>
+    <ProcessingContext.Provider value={processingContext}>
       <>
         <CardActions>
           <label>
@@ -139,78 +111,43 @@ const AbiCardActions = React.memo(() => {
                 size="small"
                 color="primary"
                 variant="outlined"
-                disabled={working}
+                disabled={processing}
               >
                 Load from JSON file...
               </Button>
             </Tooltip>
           </label>
           <UsePredefinedABI
-            onClick={abiSetter(erc20ABI, "ERC20")}
+            abi={erc20ABI}
+            name="ERC20"
             tooltip="Load built-in ERC20 ABI"
-          >
-            ERC20
-          </UsePredefinedABI>
+          />
           <UsePredefinedABI
-            onClick={abiSetter(erc165ABI, "ERC165")}
+            abi={erc165ABI}
+            name="ERC165"
             tooltip="Load built-in ERC165 ABI"
-          >
-            ERC165
-          </UsePredefinedABI>
+          />
           <UsePredefinedABI
-            onClick={abiSetter(erc721ABI, "ERC721")}
+            abi={erc721ABI}
+            name="ERC721"
             tooltip="Load built-in ERC721 ABI"
-          >
-            ERC721
-          </UsePredefinedABI>
+          />
 
           {process.env.NODE_ENV === "development" && (
             <UsePredefinedABI
-              onClick={abiSetter(demoABI, "Demo")}
+              abi={demoABI}
+              name="Demo"
               tooltip="Load built-in demo ABI"
-            >
-              Demo ABI
-            </UsePredefinedABI>
+            />
           )}
 
-          <Button size="small" onClick={open} disabled={working}>
-            Load from IPFS
-          </Button>
-          <AskCidDialog />
-
-          <Tooltip title="Save ABI JSON to IPFS">
-            <div>
-              <Button
-                size="small"
-                onClick={saveToIpfs}
-                disabled={working || !abi || abi.length === 0}
-              >
-                Save to IPFS
-              </Button>
-            </div>
-          </Tooltip>
+          <LoadFromIpfsButton />
+          <SaveToIpfsButton />
         </CardActions>
-        {working && <LinearProgress />}
+        {processing && <LinearProgress />}
       </>
     </ProcessingContext.Provider>
   );
 });
-
-const UsePredefinedABI = ({ tooltip, onClick, children }) => {
-  const processing = useProcessing();
-
-  return (
-    <Tooltip title={tooltip}>
-      <Button
-        size="small"
-        color="secondary"
-        onClick={onClick}
-        disabled={processing}
-      >
-        {children}
-      </Button>
-    </Tooltip>
-  );
-};
 
 export default AbiCard;
