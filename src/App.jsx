@@ -26,7 +26,7 @@ const App = () => {
         <AccountContext.Provider
           value={{ selectedAccount, setSelectedAccount }}
         >
-          <SnackbarProvider maxSnack={3} autoHideDuration={6000}>
+          <SnackbarProvider maxSnack={3} autoHideDuration={3000}>
             <ContractContext.Provider value={{ abi, setAbi }}>
               <Switch>
                 <Route
