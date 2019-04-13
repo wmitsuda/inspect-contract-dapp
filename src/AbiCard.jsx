@@ -1,4 +1,6 @@
 import React, { useState, useRef } from "react";
+import { withRouter } from "react-router-dom";
+import queryString from "query-string";
 import Card from "@material-ui/core/Card";
 import CardHeader from "@material-ui/core/CardHeader";
 import CardContent from "@material-ui/core/CardContent";
@@ -17,18 +19,32 @@ import { useSnackbar } from "notistack";
 import { useContract } from "./ContractContext";
 import {
   ProcessingContext,
-  useNewProcessingContext
+  useNewProcessingContext,
+  useProcessing
 } from "./ProcessingContext";
 import UsePredefinedABI from "./UsePredefinedABI";
-import { LoadFromIpfsButton, SaveToIpfsButton } from "./IpfsActions";
+import {
+  LoadFromIpfsButton,
+  SaveToIpfsButton,
+  useLoadAbiFromIpfs
+} from "./IpfsActions";
 import erc20ABI from "./abi/ERC20.json";
 import erc165ABI from "./abi/ERC165.json";
 import erc721ABI from "./abi/ERC721.json";
 import demoABI from "./abi/Demo.json";
 
-const AbiCard = ({ noAbi }) => (
-  <Card>{noAbi ? <NoAbiCard /> : <AbiLoadedCard />}</Card>
-);
+const AbiCard = ({ noAbi }) => {
+  const processingContext = useNewProcessingContext();
+  const { processing } = processingContext;
+
+  return (
+    <ProcessingContext.Provider value={processingContext}>
+      <Card>{noAbi ? <NoAbiCard /> : <AbiLoadedCard />}</Card>
+      {processing && <LinearProgress />}
+      <UrlLoader />
+    </ProcessingContext.Provider>
+  );
+};
 
 const NoAbiCard = () => (
   <>
@@ -70,8 +86,7 @@ const AbiLoadedCard = () => {
 };
 
 const AbiCardActions = React.memo(() => {
-  const processingContext = useNewProcessingContext();
-  const { processing, setProcessing } = processingContext;
+  const { processing, setProcessing } = useProcessing();
   const { enqueueSnackbar } = useSnackbar();
 
   const { setAbi } = useContract();
@@ -93,61 +108,64 @@ const AbiCardActions = React.memo(() => {
   };
 
   return (
-    <ProcessingContext.Provider value={processingContext}>
-      <>
-        <CardActions>
-          <label>
-            <input
-              type="file"
-              accept="application/json"
-              style={{ display: "none" }}
-              onChange={handleFileChange}
-              onClick={e => (e.target.value = null)}
-              ref={fileRef}
-            />
-            <Tooltip title={"Load ABI from compiled file"}>
-              <Button
-                component="span"
-                size="small"
-                color="primary"
-                variant="outlined"
-                disabled={processing}
-              >
-                Load from JSON file...
-              </Button>
-            </Tooltip>
-          </label>
-          <UsePredefinedABI
-            abi={erc20ABI}
-            name="ERC20"
-            tooltip="Load built-in ERC20 ABI"
-          />
-          <UsePredefinedABI
-            abi={erc165ABI}
-            name="ERC165"
-            tooltip="Load built-in ERC165 ABI"
-          />
-          <UsePredefinedABI
-            abi={erc721ABI}
-            name="ERC721"
-            tooltip="Load built-in ERC721 ABI"
-          />
+    <CardActions>
+      <label>
+        <input
+          type="file"
+          accept="application/json"
+          style={{ display: "none" }}
+          onChange={handleFileChange}
+          onClick={e => (e.target.value = null)}
+          ref={fileRef}
+        />
+        <Tooltip title={"Load ABI from compiled file"}>
+          <div>
+            <Button
+              component="span"
+              size="small"
+              color="primary"
+              variant="outlined"
+              disabled={processing}
+            >
+              Load from JSON file...
+            </Button>
+          </div>
+        </Tooltip>
+      </label>
+      <UsePredefinedABI
+        abi={erc20ABI}
+        name="ERC20"
+        tooltip="Load built-in ERC20 ABI"
+      />
+      <UsePredefinedABI
+        abi={erc165ABI}
+        name="ERC165"
+        tooltip="Load built-in ERC165 ABI"
+      />
+      <UsePredefinedABI
+        abi={erc721ABI}
+        name="ERC721"
+        tooltip="Load built-in ERC721 ABI"
+      />
 
-          {process.env.NODE_ENV === "development" && (
-            <UsePredefinedABI
-              abi={demoABI}
-              name="Demo"
-              tooltip="Load built-in demo ABI"
-            />
-          )}
+      {process.env.NODE_ENV === "development" && (
+        <UsePredefinedABI
+          abi={demoABI}
+          name="Demo"
+          tooltip="Load built-in demo ABI"
+        />
+      )}
 
-          <LoadFromIpfsButton />
-          <SaveToIpfsButton />
-        </CardActions>
-        {processing && <LinearProgress />}
-      </>
-    </ProcessingContext.Provider>
+      <LoadFromIpfsButton />
+      <SaveToIpfsButton />
+    </CardActions>
   );
+});
+
+const UrlLoader = withRouter(({ location: { search } }) => {
+  const values = queryString.parse(search);
+  useLoadAbiFromIpfs(values.abi);
+  return null;
 });
 
 export default AbiCard;

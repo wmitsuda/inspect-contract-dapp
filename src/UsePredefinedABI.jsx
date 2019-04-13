@@ -19,14 +19,16 @@ const UsePredefinedABI = ({ tooltip, abi, name }) => {
 
   return (
     <Tooltip title={tooltip}>
-      <Button
-        size="small"
-        color="secondary"
-        onClick={abiSetter}
-        disabled={processing}
-      >
-        {name}
-      </Button>
+      <div>
+        <Button
+          size="small"
+          color="secondary"
+          onClick={abiSetter}
+          disabled={processing}
+        >
+          {name}
+        </Button>
+      </div>
     </Tooltip>
   );
 };
