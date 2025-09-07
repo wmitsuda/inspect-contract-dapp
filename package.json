@@ -19,10 +19,10 @@
     "react-qr-reader": "^2.2.1",
     "react-router-dom": "^5.0.0",
     "react-router-hash-link": "^1.2.1",
-    "react-scripts": "2.1.8",
+    "react-scripts": "5.0.1",
     "styled-components": "^4.2.0",
     "typeface-roboto": "0.0.54",
-    "web3": "1.0.0-beta.36",
+    "web3": "1.10.4",
     "yup": "^0.27.0"
   },
   "scripts": {
